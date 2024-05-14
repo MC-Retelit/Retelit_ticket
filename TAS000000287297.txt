@@ -1,0 +1,51 @@
+C.O.B.O. SPA (C9077278) -  TAS000000287297 - INC000001357134
+-------------------------------------------------------------------------------------------
+Device: 32801-BS855C-01-CoboHQ
+-------------------------------------------------------------------------------------------
+32801-BS855C-01-CoboHQ#show ip bgp | in 10.10.141
+ *>  10.10.141.0/24   10.10.60.14              0         32768 i
+-------------------------------------------------------------------------------------------
+32801-BS855C-01-CoboHQ#show ip route 10.10.141.0
+Routing entry for 10.10.141.0/24
+  Known via "static", distance 1, metric 0
+  Redistributing via bgp 65397
+  Advertised by bgp 65397
+  Routing Descriptor Blocks:
+  * 10.10.60.14
+      Route metric is 0, traffic share count is 1
+-------------------------------------------------------------------------------------------
+32801-BS855C-01-CoboHQ#sh ip interface brief
+Interface              IP-Address      OK? Method Status                Protocol
+BDI10                  10.10.60.11     YES NVRAM  up                    up
+-------------------------------------------------------------------------------------------
+32801-BS855C-01-CoboHQ#sh interfaces BDI10
+BDI10 is up, line protocol is up
+  Hardware is BDI, address is 7c21.0e9a.543f (bia 7c21.0e9a.543f)
+  Description: "[S26813I0025] Lan MPLS Cliente"
+  Internet address is 10.10.60.11/28
+  MTU 1500 bytes, BW 1000000 Kbit/sec, DLY 10 usec,
+     reliability 255/255, txload 3/255, rxload 8/255
+  Encapsulation ARPA, loopback not set
+  Keepalive not supported
+  ARP type: ARPA, ARP Timeout 04:00:00
+  Last input 00:00:50, output 00:13:46, output hang never
+  Last clearing of "show interface" counters 6w6d
+  Input queue: 0/375/1813/0 (size/max/drops/flushes); Total output drops: 0
+  Queueing strategy: fifo
+  Output queue: 0/40 (size/max)
+  30 second input rate 34347000 bits/sec, 7742 packets/sec
+  30 second output rate 14048000 bits/sec, 5583 packets/sec
+     22564030001 packets input, 19875469164130 bytes, 0 no buffer
+     Received 0 broadcasts (1721664 IP multicasts)
+     0 runts, 0 giants, 0 throttles
+     0 input errors, 0 CRC, 0 frame, 0 overrun, 0 ignored
+     15793445140 packets output, 6957436951942 bytes, 0 underruns
+     0 output errors, 0 interface resets
+     0 unknown protocol drops
+     0 output buffer failures, 0 output buffers swapped out
+-------------------------------------------------------------------------------------------
+
+Tracing the route to 10.10.141.1
+VRF info: (vrf in name/id, vrf out name/id)
+  1 10.10.60.14 4 msec 4 msec 0 msec
+  2 172.16.3.254 4 msec 4 msec 0 msec

@@ -1,0 +1,406 @@
+
+
+il router principale è accessibile dal backup 
+miyagi-cpe2-mibugatti#telnet 84.253.188.2 /vrf internet
+Trying 84.253.188.2 ... Open
+
+User Access Verification
+
+Username: tecnonet
+Password: TantumVerde75
+
+
+--------------------------------------------------------------------------------------
+miyagi-cpe1-mibugatti> sh int description
+Interface                      Status         Protocol Description
+Gi0/0/0                        admin down     down
+Gi0/0/1                        admin down     down
+Te0/0/2                        up             up       "Link verso LAN Pubblica cliente"
+Te0/0/3                        up             up       "[CAC 939368]Link to pe-mi-cal-001 - TenGigE0/1/0/5"
+Te0/0/4                        admin down     down
+Te0/0/5                        admin down     down
+Gi0                            down           down
+BD100                          up             up       "LAN Pubblica Cliente"
+BD139                          up             up       "MGMT"
+BD837                          up             up       "PUNTO-PUNTO INTERNET"
+Vi4001                         down           down
+--------------------------------------------------------------------------------------
+miyagi-cpe1-mibugatti>sh ip int brief
+Interface              IP-Address      OK? Method Status                Protocol
+GigabitEthernet0/0/0   unassigned      YES NVRAM  administratively down down
+GigabitEthernet0/0/1   unassigned      YES NVRAM  administratively down down
+Te0/0/2                unassigned      YES NVRAM  up                    up
+Te0/0/3                unassigned      YES NVRAM  up                    up
+Te0/0/4                unassigned      YES NVRAM  administratively down down  
+Te0/0/5                unassigned      YES NVRAM  administratively down down  
+GigabitEthernet0       unassigned      YES NVRAM  down                  down  
+BDI100                 84.253.188.2    YES NVRAM  up                    up  
+BDI139                 100.64.160.46   YES NVRAM  up                    up  
+BDI837                 213.21.182.180  YES NVRAM  up                    up  
+Virtual-PPP4001        unassigned      YES unset  down                  down
+
+miyagi-cpe1-mibugatti#sh run
+Building configuration...
+
+Current configuration : 5755 bytes
+!
+version 16.9
+no service pad
+service tcp-keepalives-in
+service tcp-keepalives-out
+service timestamps debug datetime msec localtime
+service timestamps log datetime msec localtime
+service password-encryption
+service call-home
+no platform punt-keepalive disable-kernel-core
+platform bfd-debug-trace 1
+platform xconnect load-balance-hash-algo mac-ip-instanceid
+platform tcam-parity-error enable
+platform tcam-threshold alarm-frequency 1
+!
+hostname miyagi-cpe1-mibugatti
+!
+boot-start-marker
+boot-end-marker
+!
+!
+vrf definition MGMT
+ !
+ address-family ipv4
+ exit-address-family
+!
+vrf definition Mgmt-intf
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
+!
+vrf definition internet
+ rd 63823:837
+ !
+ address-family ipv4
+ exit-address-family
+!
+logging buffered 1000000
+enable secret 5 $1$Stcr$JMoYT5BHHV8.hCC6Tza221
+!
+aaa new-model
+!
+!
+aaa group server radius IRDS-radius
+ server-private 100.67.1.13 auth-port 1812 acct-port 1813 key 7 143E002208572518212B213036
+ server-private 100.67.1.44 auth-port 1812 acct-port 1813 key 7 143E002208572518212B213036
+ ip vrf forwarding MGMT
+!
+aaa authentication attempts login 5
+aaa authentication login default group IRDS-radius enable
+aaa authentication enable default group IRDS-radius enable
+aaa authorization exec default group IRDS-radius none
+aaa accounting suppress null-username
+aaa accounting update newinfo
+aaa accounting exec default start-stop group IRDS-radius
+!
+!
+!
+!
+!
+aaa session-id common
+clock timezone MET 1 0
+clock summer-time MET recurring last Sun Mar 2:00 last Sun Oct 2:00
+!
+!
+!
+!
+!
+!
+!
+ip name-server 195.78.215.228 195.78.223.228
+no ip domain lookup
+ip domain name mclink-net.it
+!
+!
+!
+login on-success log
+!
+!
+!
+!
+!
+!
+!
+multilink bundle-name authenticated
+!
+!
+!
+license udi pid ASR-920-4SZ-A sn CAT2241U1CW
+no license smart enable
+!
+!
+spanning-tree extend system-id
+sdm prefer default
+diagnostic bootup level minimal
+!
+!
+username tecnonet privilege 15 password 7 073B724F4059375603
+!
+redundancy
+bridge-domain 139
+bridge-domain 837
+!
+!
+!
+!
+!
+transceiver type all
+ monitoring
+!
+!
+track 2 ip route 0.0.0.0 0.0.0.0 reachability
+ ip vrf internet
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface GigabitEthernet0/0/0
+ no ip address
+ load-interval 30
+ shutdown
+ media-type rj45
+ negotiation auto
+!
+interface GigabitEthernet0/0/1
+ no ip address
+ load-interval 30
+ shutdown
+ media-type rj45
+ negotiation auto
+!
+interface TenGigabitEthernet0/0/2
+ description "Link verso LAN Pubblica cliente"
+ no ip address
+ load-interval 30
+ service instance 100 ethernet
+  encapsulation untagged
+  bridge-domain 100
+ !
+!
+interface TenGigabitEthernet0/0/3
+ description "[CAC 939368]Link to pe-mi-cal-001 - TenGigE0/1/0/5"
+ no ip address
+ load-interval 30
+ service instance 139 ethernet
+  description "Management ASR920 Cliente"
+  encapsulation dot1q 139
+  rewrite ingress tag pop 1 symmetric
+  bridge-domain 139
+ !
+ service instance 837 ethernet
+  description "Servizio HCI"
+  encapsulation dot1q 837
+  rewrite ingress tag pop 1 symmetric
+  bridge-domain 837
+ !
+!
+interface TenGigabitEthernet0/0/4
+ no ip address
+ shutdown
+ negotiation auto
+!
+interface TenGigabitEthernet0/0/5
+ no ip address
+ shutdown
+ negotiation auto
+!
+interface GigabitEthernet0
+ vrf forwarding Mgmt-intf
+ no ip address
+ negotiation auto
+!
+interface BDI100
+ description "LAN Pubblica Cliente"
+ vrf forwarding internet
+ ip address 84.253.188.2 255.255.255.248
+ standby 1 ip 84.253.188.1
+ standby 1 timers 1 3
+ standby 1 priority 105
+ standby 1 preempt delay minimum 60
+ standby 1 name LAN_PUB
+ standby 1 track 2 decrement 20
+ encapsulation dot1Q 100
+!
+interface BDI139
+ description "MGMT"
+ vrf forwarding MGMT
+ ip address 100.64.160.46 255.255.255.252
+ encapsulation dot1Q 139
+!
+interface BDI837
+ description "PUNTO-PUNTO INTERNET"
+ vrf forwarding internet
+ ip address 213.21.182.180 255.255.255.254
+ encapsulation dot1Q 837
+!
+router bgp 63823
+ bgp router-id 213.21.182.180
+ bgp log-neighbor-changes
+ !
+ address-family ipv4 vrf internet
+  network 84.253.188.0 mask 255.255.255.248
+  neighbor 213.21.182.181 remote-as 3302
+  neighbor 213.21.182.181 timers 5 15
+  neighbor 213.21.182.181 activate
+ exit-address-family
+!
+ip forward-protocol nd
+!
+no ip http server
+no ip http secure-server
+ip tftp source-interface GigabitEthernet0
+ip scp server enable
+ip route vrf MGMT 0.0.0.0 0.0.0.0 BDI139 100.64.160.45
+!
+logging alarm informational
+access-list 4 remark "CE2"
+access-list 4 permit 84.253.188.3
+access-list 4 remark "PE"
+access-list 4 permit 100.64.160.45
+access-list 4 remark "MONITORAGGIO PRIVATO"
+access-list 4 permit 172.18.18.19
+access-list 4 permit 213.21.182.181
+access-list 4 remark "VPN MPLS MC-LINK"
+access-list 4 permit 172.18.0.0 0.0.0.255
+access-list 4 permit 172.18.101.0 0.0.0.255
+access-list 4 permit 172.28.0.0 0.0.0.255
+access-list 4 permit 172.24.0.0 0.0.0.255
+access-list 4 permit 100.64.0.0 0.1.255.255
+access-list 4 permit 100.67.0.0 0.0.255.255
+access-list 4 permit 7.0.0.0 0.0.255.255
+access-list 4 permit 213.21.176.128 0.0.0.15
+access-list 4 permit 172.18.17.0 0.0.0.255
+access-list 4 remark "MONITORAGGIO PUBBLICO"
+access-list 4 permit 195.78.207.0 0.0.0.31
+access-list 4 permit 195.78.215.0 0.0.0.31
+access-list 4 permit 195.78.223.0 0.0.0.31
+!
+snmp-server community tux RO 4
+snmp-server location VIA GASPARE BUGATTI 7 A 20144 MILANO (MI)
+snmp-server contact Irideos S.p.A.
+snmp-server enable traps tty
+!
+radius-server attribute 31 send nas-port-detail
+!
+!
+!
+control-plane
+!
+!
+line con 0
+ exec-timeout 0 0
+ stopbits 1
+line vty 0 5
+ session-timeout 480
+ access-class 4 in vrf-also
+ exec-timeout 480 0
+ logging synchronous
+ transport input all
+ escape-character 3
+!
+
+ntp source BDI139
+ntp server vrf MGMT 195.78.207.38
+ntp server vrf MGMT 195.78.215.38
+ntp server vrf MGMT 195.78.223.38
+!
+
+!
+end
+
+miyagi-cpe1-mibugatti#
+--------------------------------------------------------------------------------------------
+PE CONF
+--------------------------------------------------------------------------------------------
+RP/0/RSP0/CPU0:pe-mi-cal-001#show logging | in May| in 63823
+Wed May  8 11:56:59.665 CEST
+RP/0/RSP0/CPU0:May  3 05:33:49.095 CEST: bgp[1087]: %ROUTING-BGP-5-ADJCHANGE : neighbor 213.21.182.180 Down - BGP Notification sent, hold time expired (VRF: default) (AS: 63823)
+RP/0/RSP0/CPU0:May  3 09:38:05.732 CEST: bgp[1087]: %ROUTING-BGP-5-ADJCHANGE : neighbor 213.21.182.180 Up (VRF: default) (AS: 63823)
+RP/0/RSP0/CPU0:May  3 10:44:53.010 CEST: bgp[1087]: %ROUTING-BGP-5-ADJCHANGE : neighbor 213.21.182.180 Down - BGP Notification received, hold time expired (VRF: default) (AS: 63823)
+ssh 
+------------------------------------------------------------------------------------------
+
+TenGigE0/1/0/5.200139          100.64.160.45   Up              Up       hci_mgmt_myagi
+TenGigE0/1/0/5.200837          213.21.182.181  Up              Up       default
+------------------------------------------------------------------------------------
+RP/0/RSP0/CPU0:pe-mi-cal-001#ping vrf hci_mgmt_myagi 100.64.160.46
+Wed May  8 12:24:43.957 CEST
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 100.64.160.46, timeout is 2 seconds:
+.....
+Success rate is 0 percent (0/5)
+---------------------------------------------------------------------------
+RP/0/RSP0/CPU0:pe-mi-cal-001#show ip route vrf hci_mgmt_myagi 100.64.160.46
+Wed May  8 12:25:41.543 CEST
+
+Routing entry for 100.64.160.44/30
+  Known via "connected", distance 0, metric 0 (connected)
+  Installed Nov 23 16:16:31.570 for 23w5d
+  Routing Descriptor Blocks
+    directly connected, via TenGigE0/1/0/5.200139
+      Route metric is 0
+  No advertising protos.
+----------------------------------------------------------------------
+RP/0/RSP0/CPU0:pe-mi-cal-001#sh run | be  63823
+Wed May  8 12:52:08.009 CEST
+Building configuration...
+  remote-as 63823
+  description NV9512 MIYAGI SRL sede di Milano - INTERNET
+  address-family ipv4 unicast
+   route-policy passall in
+   route-policy dropall out
+   default-originate
+  !
+ !
+ -------------------------------------------------------------------------
+ Conf bgp PE
+ BGP neighbor is 213.21.182.180
+ Remote AS 63823, local AS 3302, external link
+ Description: NV9512 MIYAGI SRL sede di Milano - INTERNET
+ Remote router ID 0.0.0.0
+  BGP state = Active
+  NSR State: None
+  Last read 00:00:00, Last read before reset 5d03h
+  Hold time is 180, keepalive interval is 60 seconds
+----------------------------------------------------------------------------
+Conf bgp CPE
+  miyagi-cpe1-mibugatti#show bgp vrf internet vpnv4 unicast neighbors
+BGP neighbor is 213.21.182.181,  vrf internet,  remote AS 3302, external link
+  BGP version 4, remote router ID 0.0.0.0
+  BGP state = Active, down for never
+
+
+???????????
+Timers bgp default Keepalive 60, Holdtime 180,
+
+miyagi-cpe1-mibugatti
+router bgp 63823
+neighbor 213.21.182.181 timers 5 15
+
+
+change conf eliminazione timers
+miyagi-cpe1-mibugatt(config)#router bgp 63823
+miyagi-cpe1-mibugatt(config-router)#address-family ipv4 vrf internet
+miyagi-cpe1-mibugatt(config-router-af)#no neighbor 213.21.182.181 timers 5 15
+-------------------------------------------------------------------------------------
+RP/0/RSP0/CPU0:May  8 13:03:54.406 CEST: mpls_ldp[1302]: %ROUTING-LDP-4-PEER_DUP_ADDRS : VRF 'default' (0x60000000), 3 Duplicate address(es) advertised by more than one peer
+
+
+

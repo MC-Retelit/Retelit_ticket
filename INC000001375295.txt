@@ -1,0 +1,115 @@
+21836-MI220I-01-DoxeeMilano_MPLS#sh int desc
+Interface                      Status         Protocol Description
+Gi0/0/0                        admin down     down
+Gi0/0/1                        admin down     down
+Gi0/0/2                        admin down     down
+Gi0/0/3                        admin down     down
+Gi0/0/4                        down           down
+Gi0/0/5                        up             up       "[S3531I0027]Lan MPLS Doxee to SW Cli"
+Gi0/0/6                        up             up       "Lnk FO 1Gb to PE-MI-065-03-Avalon ge-1/1/9"
+Gi0/0/7                        admin down     down
+Gi0/0/8                        admin down     down
+Gi0/0/9                        admin down     down
+Gi0/0/10                       admin down     down
+Gi0/0/11                       admin down     down
+Te0/0/12                       down           down
+Te0/0/13                       down           down
+Gi0                            down           down
+BD12                           up             up       "Lnk to PE-MI-065-03-Avalon - MPLS"
+Lo0                            up             up       'Loopback per Monitoraggio'
+Vi4001                         down           down
+-------------------------------------------------------------------------------
+21836-MI220I-01-DoxeeMilano_MPLS#sh ip int brief
+Interface              IP-Address      OK? Method Status                Protocol
+GigabitEthernet0/0/0   unassigned      YES NVRAM  administratively down down
+GigabitEthernet0/0/1   unassigned      YES NVRAM  administratively down down
+GigabitEthernet0/0/2   unassigned      YES NVRAM  administratively down down
+GigabitEthernet0/0/3   unassigned      YES NVRAM  administratively down down
+GigabitEthernet0/0/4   unassigned      YES TFTP   down                  down
+GigabitEthernet0/0/5   10.0.2.4        YES NVRAM  up                    up
+GigabitEthernet0/0/6   unassigned      YES NVRAM  up                    up
+GigabitEthernet0/0/7   unassigned      YES NVRAM  administratively down down
+GigabitEthernet0/0/8   unassigned      YES NVRAM  administratively down down
+GigabitEthernet0/0/9   unassigned      YES NVRAM  administratively down down
+GigabitEthernet0/0/10  unassigned      YES NVRAM  administratively down down
+GigabitEthernet0/0/11  unassigned      YES NVRAM  administratively down down
+Te0/0/12               unassigned      YES NVRAM  down                  down
+Te0/0/13               unassigned      YES NVRAM  down                  down
+GigabitEthernet0       unassigned      YES NVRAM  down                  down
+BDI12                  172.29.141.218  YES NVRAM  up                    up
+Loopback0              172.29.106.176  YES manual up                    up
+Virtual-PPP4001        unassigned      YES unset  down                  down
+-------------------------------------------------------------------------------
+21836-MI220I-01-DoxeeMilano_MPLS#sh arp vrf Ebilling
+Protocol  Address          Age (min)  Hardware Addr   Type   Interface
+Internet  10.0.2.1                -   0000.0c07.ac1c  ARPA   GigabitEthernet0/0/5
+Internet  10.0.2.2                0   0050.56a7.57e4  ARPA   GigabitEthernet0/0/5
+Internet  10.0.2.3                1   7488.bba6.8685  ARPA   GigabitEthernet0/0/5
+Internet  10.0.2.4                -   a0e0.af7d.b085  ARPA   GigabitEthernet0/0/5
+Internet  10.0.2.7                0   0009.0f09.0001  ARPA   GigabitEthernet0/0/5
+Internet  10.0.2.8                1   04d5.900e.48d6  ARPA   GigabitEthernet0/0/5
+Internet  10.0.2.9                1   0009.0f09.0001  ARPA   GigabitEthernet0/0/5
+Internet  10.0.2.14               0   0009.0f09.0012  ARPA   GigabitEthernet0/0/5
+Internet  172.29.141.217          8   a8d0.e555.cc91  ARPA   BDI12
+Internet  172.29.141.218          -   a0e0.af7d.b0bf  ARPA   BDI12
+-------------------------------------------------------------------------------
+21836-MI220I-01-DoxeeMilano_MPLS#ping vrf Ebilling 10.0.2.1
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 10.0.2.1, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 1/3/4 ms
+-------------------------------------------------------------------------------
+21836-MI220I-01-DoxeeMilano_MPLS#ping vrf Ebilling 10.0.2.2
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 10.0.2.2, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 1/2/4 ms
+-------------------------------------------------------------------------------
+21836-MI220I-01-DoxeeMilano_MPLS#ping vrf Ebilling 10.0.2.14
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 10.0.2.14, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 1/3/4 ms
+-------------------------------------------------------------------------------
+21836-MI220I-01-DoxeeMilano_MPLS#ping vrf Ebilling 8.8.8.8 source Gi0/0/5
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 8.8.8.8, timeout is 2 seconds:
+Packet sent with a source address of 10.0.2.4
+.....
+Success rate is 0 percent (0/5)
+-------------------------------------------------------------------------------
+21836-MI220I-01-DoxeeMilano_MPLS#ping vrf Ebilling 10.229.0.43 source Gi0/0/5
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 10.229.0.43, timeout is 2 seconds:
+Packet sent with a source address of 10.0.2.4
+.....
+Success rate is 0 percent (0/5)
+-------------------------------------------------------------------------------
+21836-MI220I-01-DoxeeMilano_MPLS#sh ip route vrf Ebilling 10.229.0.43
+
+Routing Table: Ebilling
+% Subnet not in table
+-------------------------------------------------------------------------------
+21836-MI220I-01-DoxeeMilano_MPLS#sh ip route vrf Ebilling 0.0.0.0
+
+Routing Table: Ebilling
+% Network not in table
+-------------------------------------------------------------------------------
+
+
+network 10.0.2.0 mask 255.255.255.240 --- (10.0.2.0/28) v
+network 10.224.0.0 mask 255.255.0.0 --- (10.224.0.0/16) v
+network 172.22.0.0 mask 255.254.0.0 --- (172.22.0.0/15) v
+network 172.24.0.0 mask 255.254.0.0 --- (172.24.0.0/15) v
+network 10.229.0.0 mask 255.255.0.0 --- (10.229.0.0/16) v
+network 10.233.0.0 mask 255.255.0.0 --- (10.233.0.0/16) v
+network 10.230.16.0 mask 255.255.254.0 --- (10.230.16.0/23) v
+
+
+ip route vrf Ebilling 10.0.2.0 255.255.255.240 10.0.2.14
+ip route vrf Ebilling 10.230.16.0 255.255.254.0 10.0.2.14
+ip route vrf Ebilling 10.233.0.0 255.255.0.0 10.0.2.14
+ip route vrf Ebilling 172.22.0.0 255.254.0.0 10.0.2.14
+ip route vrf Ebilling 172.24.0.0 255.254.0.0 10.0.2.14
+ip route vrf Ebilling 10.224.0.0 255.255.0.0 10.0.2.14
+ip route vrf Ebilling 10.229.0.0 255.255.0.0 10.0.2.14

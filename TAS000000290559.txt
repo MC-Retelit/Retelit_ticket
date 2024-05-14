@@ -1,0 +1,27 @@
+Avalon Pe
+
+Saspi-dati.inet.0: 141 destinations, 269 routes (141 active, 0 holddown, 0 hidden)
++ = Active Route, - = Last Active, * = Both
+
+10.40.0.0/24       *[Static/5] 212w5d 23:06:39
+                    > to 100.64.8.52 via ge-1/0/5.420
+
+manuel.chiocchetta@PE-MI-065-03-Avalon> show interfaces ge-1/0/5.420
+  Logical interface ge-1/0/5.420 (Index 725) (SNMP ifIndex 1579)
+    Description: [S29098P0010]Lnk to FW-MI1535-Saspi
+    Flags: Up SNMP-Traps 0x0 VLAN-Tag [ 0x8100.420 ]  Encapsulation: ENET2
+    Bandwidth: 200mbps
+    Input packets : 279687485640
+    Output packets: 170384811787
+    Protocol inet, MTU: 9174
+      Flags: Sendbcast-pkt-to-re, Is-Primary
+        Destination: 100.64.8.48/29, Local: 100.64.8.49, Broadcast: 100.64.8.55
+      Addresses, Flags: Is-Default Is-Preferred Is-Primary
+        Destination: 100.64.8.48/29, Local: 100.64.8.50, Broadcast: 100.64.8.55
+    Protocol multiservice, MTU: Unlimited
+
+FW1-RM940C-Saspi-Roma # execute ping 10.40.0.40
+PING 10.40.0.40 (10.40.0.40): 56 data bytes
+--- 10.40.0.40 ping statistics ---
+1000 packets transmitted, 997 packets received, 0% packet loss
+round-trip min/avg/max = 9.4/11.3/50.7 ms

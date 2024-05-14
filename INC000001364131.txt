@@ -1,0 +1,37 @@
+
+14e1kfz8ocxdgciz
+
+
+--Azioni intraprese--
+Configurazione protocollo SNMP V2c eseguita e testata in live call con il cliente,
+
+--Devices--
+-> sw1_N3048_MI1408C_R1.vittoria, 192.168.251.196
+-> sw2_N3048_MI1408C_R2.vittoria, 192.168.251.196
+->SW1_Vittoria_Portello cisco WS-C3750G-12S(pre configurato dal cliente)
+
+--Config--
+sw1_N3048_MI1408C_R1.vittoria(config)# sh run | in snmp
+ip access-list copp-system-acl-snmp
+  10 permit udp any any eq snmp
+  20 permit udp any any eq snmptrap
+class-map type control-plane match-any copp-snmp
+  match access-group name copp-system-acl-snmp
+  class copp-snmp
+snmp-server contact "idc.rete@infracom.it"
+snmp-server location  Italy, Milano
+snmp-server source-interface inform Vlan99
+snmp-server user admin network-admin auth md5 0x6fc729a90aee06ac9e3155c091787a7e priv 0x6fc729a90aee06ac9e3155c091787
+snmp-server user vittoria network-admin auth md5 0x96f7365a1ab53d45dbe2f1f3267b4567 priv 0x96f7365a1ab53d45dbe2f1f326<<<
+snmp-server host 192.168.252.4 traps version 2c infra-mrtg
+snmp-server host 192.168.252.5 traps version 2c infra-mrtg
+snmp-server host 172.30.2.216 traps version 2c vittv3<<<
+snmp-server community HwVittoria group network-admin<<<
+snmp-server community infra-mrtg group network-operator
+snmp-server community vittv3 group network-admin<<<
+
+
+
+
+SW1_Vittoria_Portello#sh snmp mib ifmib ifindex gigabitEthernet 1/0/2
+Interface = GigabitEthernet1/0/2, Ifindex = 10102

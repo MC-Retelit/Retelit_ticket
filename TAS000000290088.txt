@@ -1,0 +1,18 @@
+fontanavpn-ce2-mitrebbia4 7.8.19.152
+Vlan2                      194.244.48.42   YES manual up                    up
+
+Sending 100, 100-byte ICMP Echos to 23.211.188.228, timeout is 2 seconds:
+Packet sent with a source address of 194.244.48.42
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+Success rate is 100 percent (100/100), round-trip min/avg/max = 8/10/16 ms
+fontanavpn-ce2-mitrebbia26#
+
+
+
+Appurato che dal punto di vista network lato provider e lato cliente il sito in questione è raggiungibile tramite
+protocollo ICMP dunque pienamente visibile al routing, si ritine la probleblematica sia a livello applicativo 
+essendo l'errore presentato alla connessione nella lan cliente: ERR_HTTP2_PROTOCOL_ERROR.
+Suddetto errore indica diverse problematiche a livello browser come compatibilita, cache cookies, conflitto cronologiae affini etc..
+(tutte escluse tramite test), oppure a lato sicurezza il server si rifiuta ti instaurare una connessione tcp con il client(ipotesi piu probalibe).
+Dal momento che Akamai(cliente Louis Vuitton) si occupa di filtrarte le connesioni in entratata/uscita consigliamo al cliente di contattare direttemante il support Louis Vuitton che provvedera ad avvisare Akamai della problematica, il quale potra verificare direttamente le policy applicate all'ip  194.244.48.46

@@ -1,0 +1,91 @@
+BMW-39177-CS093C-01-Milizia#ping 8.8.8.8
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 8.8.8.8, timeout is 2 seconds:
+.....
+Success rate is 0 percent (0/5)
+
+MW-39177-CS093C-01-Milizia#ping 217.12.190.245 source AT0.1
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 217.12.190.245, timeout is 2 seconds:
+Packet sent with a source address of 172.29.73.18
+.....
+
+
+BMW-39177-CS093C-01-Milizia#show ip route 0.0.0.0
+Routing entry for 0.0.0.0/0, supernet
+  Known via "bgp 65258", distance 20, metric 0, candidate default path
+  Tag 65501, type external
+  Last update from 172.29.73.17 23:56:32 ago <<<---
+  Routing Descriptor Blocks:
+  * 172.29.73.17, from 172.29.73.17, 23:56:32 ago
+      Route metric is 0, traffic share count is 1
+      AS Hops 3
+      Route tag 65501
+      MPLS label: none
+
+BMW-39177-CS093C-01-Milizia#ping 172.29.73.17
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 172.29.73.17, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 32/32/36 ms
+
+bras15-mi#sh int description | in BMW
+AT0/2/1.55107                  up             up       122341/39 BMW-39102-NA384C-AutomercatoStabia
+AT0/2/1.55108                  down           down     122391/05 BMW-39162-NA167C-01-MJCar
+AT0/2/1.75217                  up             up       [098312901308] Lnk Main to BMW-39177-CS093C-01-Milizia
+
+
+bras15-mi#sh int AT0/2/1.75217
+ATM0/2/1.75217 is up, line protocol is up
+  Hardware is SPA-3XOC3-ATM-V2, address is 0025.84f8.4421 (bia 0025.84f8.4421)
+  Description: [098312901308] Lnk Main to BMW-39177-CS093C-01-Milizia
+  Internet address is 172.29.73.17/30 <<<---
+  MTU 4470 bytes, BW 7000 Kbit/sec, DLY 80 usec,
+     reliability 255/255, txload 1/255, rxload 1/255
+  Encapsulation ATM
+  Keepalive not supported
+     296155 packets input, 18843077 bytes
+     118915 packets output, 6952577 bytes
+     105422 OAM cells input, 123302 OAM cells output
+  AAL5 CRC errors : 0
+  AAL5 SAR Timeouts : 0
+  AAL5 Oversized SDUs : 0
+  Last clearing of "show interface" counters never
+
+bras15-mi#sh ip route vrf  Bmw-Dealers 0.0.0.0
+
+Routing Table: Bmw-Dealers
+Routing entry for 0.0.0.0/0, supernet
+  Known via "bgp 5396", distance 200, metric 0, candidate default path
+  Tag 3302, type internal
+  Last update from 217.12.190.245 7w0d ago<<<---
+  Routing Descriptor Blocks:
+  * 217.12.190.245 (default), from 213.21.129.133, 7w0d ago
+      Route metric is 0, traffic share count is 1
+      AS Hops 1
+      Route tag 3302
+      MPLS label: 157
+      MPLS Flags: MPLS Required
+
+
+bras15-mi#ping vrf  Bmw-Dealers 8.8.8.8
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 8.8.8.8, timeout is 2 seconds:
+.....
+Success rate is 0 percent (0/5)
+
+bras15-mi#ping vrf  Bmw-Dealers 217.12.190.245 source ATM 0/2/1.75217
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 217.12.190.245, timeout is 2 seconds:
+Packet sent with a source address of 172.29.73.17
+.....
+Success rate is 0 percent (0/5)
+
+bras15-mi#ping 217.12.190.245
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 217.12.190.245, timeout is 2 seconds:
+!!!!!
+
+bras15-mi#sh ip route vrf Bmw-Dealers 217.12.190.245<<<---
+Routing Table: Bmw-Dealers
+% Network not in table

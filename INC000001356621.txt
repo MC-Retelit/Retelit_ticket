@@ -1,0 +1,100 @@
+Salve,
+al fine di monitorare i device in vostra gestione che erogano i servizi per il cliente Vittoria Assicurazioni,  vi chiediamo di comunicarci o configurare una community snmpv3.
+
+I device in questione sono i seguenti:
+
+//////////////////////////////////////////////////////////////////
+172.30.97.73
+Nexus 3048 Chassis
+NX-OS 6.0(2)U3(7)
+Nexus DMZ Infracom TAG_UPDOWN - Internet Irideos
+Irideos
+
+///////////////////////////////////////////////////////////////////
+172.30.97.72
+Nexus 3048 Chassis
+NX-OS 6.0(2)U3(7)
+Irideos
+
+///////////////////////////////////////////////////////////////////
+172.30.1.72
+Catalyst 3750G (WS-C3750G-48TS-S)
+12.2(35)SE5 (IPBASE)
+sw1_vittoria_portello
+Irideos
+
+
+
+Configuration//////////////////////////////////////////////////////
+SNMPV3 details
+sw1_N3048_MI1408C_R1.vittoria# show snmp community
+Community            Group / Access      context    acl_filter
+---------            --------------      -------    ----------
+HwVittoria            network-operator
+infra-mrtg            network-operator
+
+
+
+sw1_N3048_MI1408C_R1.vittoria(config)# snmp-server community vittv3 group network-admin
+sw1_N3048_MI1408C_R1.vittoria(config)# do sh snmp comm
+Community            Group / Access      context    acl_filter
+---------            --------------      -------    ----------
+HwVittoria            network-operator
+infra-mrtg            network-operator
+vittv3                network-admin
+sw1_N3048_MI1408C_R1.vittoria(config)# snmp-server host 172.30.2.216 ?
+  <CR>
+  filter-vrf        Filters notifications to the notification host receiver based on the configured VRF
+  informs           Send Inform messages to this host
+  source-interface  Source interface to be used for sending out SNMP notifications to this host
+  traps             Send Traps messages to this host
+  udp-port          The notification host's UDP port number
+  use-vrf           Configures SNMP to use the selected VRF to communicate with the host receiver
+
+sw1_N3048_MI1408C_R1.vittoria(config)# snmp-server host 172.30.2.216 traps
+                                                                          ^
+% Incomplete command at '^' marker.
+sw1_N3048_MI1408C_R1.vittoria(config)# snmp-server host 172.30.2.216 traps ?
+  WORD     SNMP community string or SNMPv3 user name (Max Size 32)
+  version  SNMP version to use for notification messages
+
+sw1_N3048_MI1408C_R1.vittoria(config)# snmp-server host 172.30.2.216 traps vittv3 ?
+  <CR>
+  udp-port  The notification host's UDP port number
+
+sw1_N3048_MI1408C_R1.vittoria(config)# snmp-server host 172.30.2.216 traps vittv3
+sw1_N3048_MI1408C_R1.vittoria(config)#
+
+sw1_N3048_MI1408C_R1.vittoria(config)# snmp-server user vittoria network-admin auth md5 hw19Vittoria
+
+sw1_N3048_MI1408C_R1.vittoria(config)# snmp-server user vittoria network-admin auth md5 hw19Vittoria engineID 128:000:000:009:003:112:112:139:224:112:032
+snmp-server user vittoria network-admin auth md5 hw19Vittoria priv hw19Vittoria engineID 128:000:000:009:003:112:112:139:224:112:032
+
+sw1_N3048_MI1408C_R1.vittoria(config)# do sh snmp engi
+Local SNMP engineID: [Hex] 800000090370708BE07020
+                     [Dec] 128:000:000:009:003:112:112:139:224:112:032
+
+
+
+
+sw1_N3048_MI1408C_R1.vittoria# sh run | in snmp
+ip access-list copp-system-acl-snmp
+  10 permit udp any any eq snmp
+  20 permit udp any any eq snmptrap
+class-map type control-plane match-any copp-snmp
+  match access-group name copp-system-acl-snmp
+  class copp-snmp
+snmp-server contact "idc.rete@infracom.it"
+snmp-server location  Italy, Milano
+snmp-server source-interface inform Vlan99
+snmp-server user admin network-admin auth md5 0x6fc729a90aee06ac9e3155c091787a7e priv 0x6fc729a90aee06ac9e3155c091787a7e localizedkey
+snmp-server user vittoria network-admin auth md5 0x96f7365a1ab53d45dbe2f1f3267b4567 localizedkey
+snmp-server host 192.168.252.4 traps version 2c infra-mrtg
+snmp-server host 192.168.252.5 traps version 2c infra-mrtg
+snmp-server host 172.30.2.216 traps version 3 priv vittv3
+snmp-server community HwVittoria group network-operator
+snmp-server community infra-mrtg group network-operator
+snmp-server community vittv3 group network-admin
+
+
+

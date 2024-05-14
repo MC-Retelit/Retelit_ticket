@@ -1,0 +1,204 @@
+
+Analisi linee ATM verso PaneziDavis
+Linea ATM down, dall'analisi la configurazione risulta corretta
+probabile guasto lato carrier(TIM).
+
+bras15-mi#sh ip route vrf  Bmw-Dealers 0.0.0.0
+Routing Table: Bmw-Dealers
+
+Routing entry for 0.0.0.0/0, supernet
+  Known via "bgp 5396", distance 200, metric 0, candidate default path
+  Tag 3302, type internal
+  Last update from 217.12.190.245 7w0d ago<<<---
+  Routing Descriptor Blocks:
+  * 217.12.190.245 (default), from 213.21.129.133, 7w0d ago
+      Route metric is 0, traffic share count is 1
+      AS Hops 1
+      Route tag 3302
+      MPLS label: 157
+      MPLS Flags: MPLS Required
+
+bras15-mi#ping vrf  Bmw-Dealers 217.12.190.245 source ATM 0/2/1.75217
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 217.12.190.245, timeout is 2 seconds:
+Packet sent with a source address of 172.29.73.17
+.....
+Success rate is 0 percent (0/5)
+
+
+
+Gateway of last resort is 217.12.190.245 to network 0.0.0.0
+bras15-mi#show vrf VGI-Org
+  Name                             Default RD          Protocols   Interfaces
+  VGI-Org                          3302:124024         ipv4        Lo1240240
+                                                                   Lo1240244
+                                                                   AT0/2/1.55102
+                                                                   AT0/2/1.55101
+                                                                   AT0/2/1.79269
+                                                                   AT0/2/1.79311
+                                                                   AT0/2/1.76480
+                                                                   AT0/2/1.76485
+                                                                   AT0/2/1.75114
+                                                                   AT0/2/1.20102
+                                                                   AT0/2/1.20109
+                                                                   AT0/2/1.78172<<<
+bras15-mi#sh int ATM0/2/1.78172
+ATM0/2/1.78172 is down, line protocol is down
+  Hardware is SPA-3XOC3-ATM-V2, address is 0025.84f8.4421 (bia 0025.84f8.4421)
+  Description: [074413701660] VGI-18869-TR050C-PaneziDavis
+  Internet address is 172.29.14.133/30
+  MTU 1500 bytes, BW 149760 Kbit/sec, DLY 80 usec,
+     reliability 255/255, txload 1/255, rxload 1/255
+  Encapsulation ATM
+  Keepalive not supported
+     164566 packets input, 13611732 bytes
+     544879 packets output, 70863405 bytes
+     2748 OAM cells input, 63984 OAM cells output
+  AAL5 CRC errors : 0
+  AAL5 SAR Timeouts : 0
+  AAL5 Oversized SDUs : 0
+  Last clearing of "show interface" counters never
+
+
+bras15-mi#sh ip route vrf Bmw-Dealers 0.0.0.0
+Routing Table: Bmw-Dealers
+Routing entry for 0.0.0.0/0, supernet
+  Known via "bgp 5396", distance 200, metric 0, candidate default path
+  Tag 3302, type internal
+  Last update from 217.12.190.245 7w0d ago
+  Routing Descriptor Blocks:
+  * 217.12.190.245 (default), from 213.21.129.133, 7w0d ago
+      Route metric is 0, traffic share count is 1
+      AS Hops 1
+      Route tag 3302
+      MPLS label: 157
+      MPLS Flags: MPLS Required
+
+MPLS Hopes
+bras15-mi#show ip cef 217.12.190.245
+217.12.190.245/32
+  nexthop 213.21.131.48 TenGigabitEthernet0/1/0.996 label 25402
+  nexthop 213.21.131.49 TenGigabitEthernet0/1/0.996 label 62663
+  nexthop 213.21.131.170 TenGigabitEthernet0/1/0.997 label 25402
+  
+
+
+bras15-mi#ping vrf Bmw-Dealers 8.8.8.8
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 8.8.8.8, timeout is 2 seconds:
+.....
+Success rate is 0 percent (0/5)
+bras15-mi#trac vrf Bmw-Dealers 8.8.8.8
+bras15-mi#trac vrf Bmw-Dealers 8.8.8.8
+Type escape sequence to abort.
+Tracing the route to dns.google (8.8.8.8)
+VRF info: (vrf in name/id, vrf out name/id)
+  1 213.21.131.48 [MPLS: Labels 25402/157 Exp 0] 3 msec
+    213.21.131.49 [MPLS: Labels 62663/157 Exp 0] 3 msec
+    213.21.131.170 [MPLS: Labels 25402/157 Exp 0] 4 msec
+  2  *  *  *
+  3  *  *  *
+  4  *  *  *
+  5 3.3.3.3 3 msec 4 msec 3 msec
+  6  *  *  *
+  7  *  *  *
+  8  *  *  *
+  9  *  *  *
+ 10  *  *  *
+ 11  *  *  *
+ 12  *  *  *
+ 13  *  *  *
+ 14  *  *  *
+ 15  *  *  *
+ 16  *  *  *
+ 17  *  *  *
+ 18  *  *  *
+ 19  *  *  *
+ 20  *  *  *
+ 21  *  *  *
+ 22  *  *  *
+ 23  *  *  *
+ 24  *  *  *
+ 25  *  *  *
+ 26  *  *  *
+ 27  *  *  *
+ 28  *  *  *
+ 29  *  *  *
+ 30  *  *  *
+
+Interfaccia verso PaneziDavis Down
+bras15-mi#sh ip int brief | in ATM
+ATM0/2/1.78172         172.29.14.133   YES manual down                  down
+
+Verifica tabella forwarding MPLS
+bras15-mi#show mpls forwarding-table vrf Bmw-Dealers
+Local      Outgoing   Prefix           Bytes Label   Outgoing   Next Hop
+Label      Label      or Tunnel Id     Switched      interface
+872        No Label   194.20.130.9/32[V]   \
+                                       0             AT0/2/1.55107  point2point
+1267       No Label   172.29.64.18/32[V]   \
+                                       5046518       AT0/2/1.55107  point2point
+1346       Pop Label  172.29.144.15/32[V]   \
+                                       0             aggregate/Bmw-Dealers
+1347       Pop Label  172.29.144.115/32[V]   \
+                                       0             aggregate/Bmw-Dealers
+2481       No Label   10.24.118.128/25[V]   \
+                                       0             AT0/2/1.55107  point2point
+3952       No Label   10.192.118.128/25[V]   \
+                                       0             AT0/2/1.55107  point2point
+5135       No Label   194.20.130.173/32[V]   \
+                                       0             AT0/2/1.75217  point2point
+5792       No Label   194.20.131.173/32[V]   \
+                                       0             AT0/2/1.75217  point2point
+5850       No Label   172.29.65.112/32[V]   \
+                                       9257252       AT0/2/1.75217  point2point
+6541       No Label   172.29.73.16/30[V]   \
+                                       184264        aggregate/Bmw-Dealers
+7548       No Label   172.29.67.192/30[V]   \
+                                       54357         aggregate/Bmw-Dealers
+9464       No Label   194.20.131.9/32[V]   \
+                                       0             AT0/2/1.55107  point2point
+
+Verifica MPLS path per rotta 0.0.0.0
+bras15-mi#sh ip route vrf Bmw-Dealers 0.0.0.0
+
+Routing Table: Bmw-Dealers
+Routing entry for 0.0.0.0/0, supernet
+  Known via "bgp 5396", distance 200, metric 0, candidate default path
+  Tag 3302, type internal
+  Last update from 217.12.190.245 7w0d ago
+  Routing Descriptor Blocks:
+  * 217.12.190.245 (default), from 213.21.129.133, 7w0d ago
+      Route metric is 0, traffic share count is 1
+      AS Hops 1
+      Route tag 3302
+      MPLS label: 157
+      MPLS Flags: MPLS Required
+bras15-mi#show mpls forwarding-table vrf Bmw-Dealers 217.12.190.245
+Local      Outgoing   Prefix           Bytes Label   Outgoing   Next Hop
+Label      Label      or Tunnel Id     Switched      interface
+None       157        0.0.0.0/0[V]     0
+bras15-mi#show ip cef
+bras15-mi#show ip cef vr
+bras15-mi#show ip cef vrf Bmw-Dealers 0.0.0.0
+0.0.0.0/32
+  receive
+bras15-mi#show ip cef vrf Bmw-Dealers 217.12.190.245
+0.0.0.0/0
+  nexthop 213.21.131.48 TenGigabitEthernet0/1/0.996 label 25402 157
+  nexthop 213.21.131.49 TenGigabitEthernet0/1/0.996 label 62663 157
+  nexthop 213.21.131.170 TenGigabitEthernet0/1/0.997 label 25402 157
+bras15-mi#
+bras15-mi#telnet 213.21.131.170
+Trying 213.21.131.170 ...
+% Connection refused by remote host
+
+bras15-mi#ping vrf
+bras15-mi#ping vrf Bmw-Dealers 213.21.131.48 sou
+bras15-mi#ping vrf Bmw-Dealers 213.21.131.48 source TenGigabitEthernet0/1/0.996
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 213.21.131.48, timeout is 2 seconds:
+Packet sent with a source address of 213.21.131.33
+.....
+Success rate is 0 percent (0/5)
+bras15-mi#

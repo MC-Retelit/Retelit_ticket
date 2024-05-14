@@ -1,0 +1,494 @@
+[12:21 pm] Vittorio Pietro Caneo (esterno)
+orzanautovpn-ce-ud#sh run
+
+Building configuration...
+ 
+Current configuration : 5767 bytes
+
+!
+
+! No configuration change since last restart
+
+!
+
+version 15.5
+
+service timestamps debug datetime localtime show-timezone
+
+service timestamps log datetime localtime show-timezone
+
+service password-encryption
+
+!
+
+hostname orzanautovpn-ce-ud
+
+!
+
+boot-start-marker
+
+boot system flash c1900-universalk9-mz.SPA.155-1.T1.bin
+
+boot-end-marker
+
+!
+
+!
+
+logging buffered 1000000
+
+enable secret 5 $1$Qr0m$g6EKxanbN.b3TmDpmVgyP/
+
+!
+
+aaa new-model
+
+!
+
+!
+
+aaa authentication login default group radius local enable
+
+aaa authentication enable default group radius enable
+
+aaa authorization exec default group radius none 
+
+aaa accounting suppress null-username
+
+aaa accounting update newinfo
+
+aaa accounting exec default start-stop group radius
+
+!
+
+!         
+
+!
+
+!
+
+!
+
+aaa session-id common
+
+bsd-client server url https://cloudsso.cisco.com/as/token.oauth2
+
+clock timezone met 1 0
+
+clock summer-time met recurring last Sun Mar 2:00 last Sun Oct 2:00
+
+!
+
+!
+
+!
+
+!
+
+!
+
+!
+
+!
+
+!
+
+!
+
+ip dhcp excluded-address 10.55.152.129 10.55.152.141
+
+!
+
+ip dhcp pool AUT-30122
+
+network 10.55.152.128 255.255.255.224
+
+default-router 10.55.152.129 
+
+domain-name it301220.vw-group.com
+
+dns-server 10.55.255.10 80.74.176.132 
+
+!
+
+!
+
+!
+
+no ip domain lookup
+
+ip domain name mclink-biz.it
+
+ip name-server 195.78.215.228
+
+ip name-server 195.78.223.228
+
+ip name-server 80.74.176.132
+
+ip name-server 80.74.180.132
+
+ip cef
+
+no ipv6 cef
+
+multilink bundle-name authenticated
+
+!
+
+cts logging verbose
+
+!
+
+!
+
+license udi pid CISCO1921/K9 sn FCZ1917614Z
+
+!
+
+!
+
+username cisco password 7 110A1016141D
+
+username tecnonet privilege 15 secret 5 $1$wVRD$ElCfOiF1FcPf5Kiqk0Hh//
+
+!
+
+redundancy
+
+!
+
+!
+
+controller VDSL 0/0/0
+
+!
+
+!
+
+class-map match-all TRAFFICO-GOLD
+
+match dscp ef 
+
+!
+
+policy-map QOS-OUT
+
+class TRAFFICO-GOLD
+
+  priority 512
+
+  set cos 5
+
+class class-default
+
+  set cos 0
+
+!
+
+!
+
+!
+
+!
+
+!
+
+interface Loopback0
+
+description "Loopback per Management"
+
+ip address 7.8.3.161 255.255.255.255
+
+!
+
+interface Loopback199
+
+description "Loopback per NAT navigazione"
+
+ip address 77.246.15.88 255.255.255.255
+
+!
+
+interface Embedded-Service-Engine0/0
+
+no ip address
+
+shutdown
+
+!
+
+interface GigabitEthernet0/0
+
+description "Lan Cliente"
+
+ip address 10.55.152.129 255.255.255.224
+
+ip access-group VGI-Org-ACL in
+
+ip accounting output-packets
+
+ip nat inside
+
+ip virtual-reassembly in
+
+duplex auto
+
+speed auto
+
+!
+
+interface GigabitEthernet0/1
+
+no ip address
+
+shutdown 
+
+duplex auto
+
+speed auto
+
+!
+
+interface ATM0/0/0
+
+no ip address
+
+shutdown
+
+no atm ilmi-keepalive
+
+!
+
+interface Ethernet0/0/0
+
+description "WAN Principale VDSL"
+
+no ip address
+
+load-interval 30
+
+service-policy output QOS-OUT
+
+!
+
+interface Ethernet0/0/0.845
+
+description "VLAN DATI"
+
+encapsulation dot1Q 845
+
+pppoe enable group global
+
+pppoe-client dial-pool-number 1
+
+!
+
+interface Dialer1
+
+description "VDSL DATI "
+
+mtu 1492
+
+ip address negotiated
+
+ip nat outside
+
+ip virtual-reassembly in
+
+encapsulation ppp
+
+no ip split-horizon
+
+ip tcp adjust-mss 1452
+
+dialer pool 1
+
+ppp authentication chap pap callin
+
+ppp pap sent-username adslmplsnv4702c password 7 03324E1F030E065D74
+
+!
+
+router bgp 65001
+
+bgp log-neighbor-changes
+
+bgp dampening
+
+network 7.8.3.161 mask 255.255.255.255
+
+network 10.55.152.128 mask 255.255.255.224
+
+network 77.246.15.88 mask 255.255.255.255
+
+neighbor 172.29.196.1 remote-as 5396
+
+neighbor 172.29.196.2 remote-as 5396
+
+!
+
+ip forward-protocol nd
+
+!
+
+ip bgp-community new-format
+
+no ip http server
+
+no ip http secure-server
+
+!
+
+ip nat inside source list 199 interface Loopback199 overload (natta la source list 199 con l'indirizzo ip della Loopback199 )
+
+!
+
+ip access-list extended VGI-Org-ACL
+
+permit ip 10.55.152.128 0.0.0.31 10.55.152.128 0.0.0.31
+
+permit ip 10.55.0.0 0.0.255.255 10.55.255.0 0.0.0.255
+
+permit ip 10.55.0.0 0.0.255.255 10.55.134.0 0.0.0.15
+
+permit ip 10.55.0.0 0.0.255.255 10.82.0.0 0.0.15.255
+
+permit ip 10.55.0.0 0.0.255.255 10.112.0.0 0.0.255.255
+
+permit ip 10.55.0.0 0.0.255.255 10.219.4.0 0.0.0.255
+
+permit ip 10.55.0.0 0.0.255.255 host 10.186.115.181
+
+permit ip 10.55.0.0 0.0.255.255 80.74.186.128 0.0.0.15
+
+deny   ip 10.55.0.0 0.0.255.255 10.0.0.0 0.255.255.255
+
+deny   ip 10.55.0.0 0.0.255.255 172.0.0.0 0.31.255.255
+
+deny   ip 10.55.0.0 0.0.255.255 192.168.0.0 0.0.255.255
+
+permit ip any any
+
+!
+
+ip radius source-interface Loopback0 
+
+!
+
+!
+
+snmp-server community tux RO 4
+
+snmp-server location VIA TRENTO TRIESTE 115 33038 SAN DANIELE DEL FRIULI (UD)
+
+snmp-server contact Irideos SpA
+
+snmp-server enable traps tty
+
+access-list 4 remark "BRAS"
+
+access-list 4 permit 172.29.196.1
+
+access-list 4 permit 172.29.196.2
+
+access-list 4 remark "MONITORAGGIO"
+
+access-list 4 permit 195.78.207.0 0.0.0.31
+
+access-list 4 permit 195.78.215.0 0.0.0.31
+
+access-list 4 permit 195.78.223.0 0.0.0.31
+
+access-list 4 remark "VPN MC-LINK"
+
+access-list 4 permit 7.0.0.0 0.0.255.255
+
+access-list 199 remark * ACL per NAT navigazione *
+
+access-list 199 deny   ip 10.55.0.0 0.0.255.255 10.0.0.0 0.255.255.255
+
+access-list 199 deny   ip 10.55.0.0 0.0.255.255 172.16.0.0 0.15.255.255
+
+access-list 199 deny   ip 10.55.0.0 0.0.255.255 192.168.0.0 0.0.255.255
+
+access-list 199 deny   ip 10.55.0.0 0.0.255.255 80.74.186.128 0.0.0.15
+
+access-list 199 permit ip 10.55.0.0 0.0.255.255 any
+
+radius-server attribute 31 send nas-port-detail
+
+radius-server host 195.78.207.35 auth-port 1812 acct-port 1813
+
+radius-server host 195.78.215.35 auth-port 1812 acct-port 1813
+
+radius-server key 7 01100349581E151B6F5F1D0A0B5603
+
+!
+
+!
+
+!
+
+control-plane
+
+!
+
+!
+
+!
+
+line con 0
+
+session-timeout 480 
+
+exec-timeout 480 0
+
+logging synchronous
+
+escape-character 3
+
+line aux 0
+
+line 2
+
+no activation-character
+
+no exec
+
+transport preferred none
+
+transport output pad telnet rlogin lapb-ta mop udptn v120 ssh
+
+stopbits 1
+
+line vty 0 4
+
+session-timeout 480 
+
+access-class 4 in
+
+exec-timeout 480 0
+
+logging synchronous
+
+transport input all
+
+escape-character 3
+
+!
+
+scheduler allocate 20000 1000
+
+ntp source Loopback0
+
+ntp server 195.78.207.38
+
+ntp server 195.78.215.38
+
+ntp server 195.78.223.38
+
+!
+
+end
+ 
+orzanautovpn-ce-ud# 

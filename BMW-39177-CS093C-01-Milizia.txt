@@ -1,0 +1,23 @@
+BMW-39177-CS093C-01-Milizia#ping 8.8.8.8
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 8.8.8.8, timeout is 2 seconds:
+.....
+Success rate is 0 percent (0/5)
+
+BMW-39177-CS093C-01-Milizia#show ip route 0.0.0.0
+Routing entry for 0.0.0.0/0, supernet
+  Known via "bgp 65258", distance 20, metric 0, candidate default path
+  Tag 65501, type external
+  Last update from 172.29.73.17 23:56:32 ago
+  Routing Descriptor Blocks:
+  * 172.29.73.17, from 172.29.73.17, 23:56:32 ago
+      Route metric is 0, traffic share count is 1
+      AS Hops 3
+      Route tag 65501
+      MPLS label: none
+      
+BMW-39177-CS093C-01-Milizia#ping 172.29.73.17
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 172.29.73.17, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 32/32/36 ms
