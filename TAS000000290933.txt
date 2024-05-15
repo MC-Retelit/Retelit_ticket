@@ -1,5 +1,5 @@
 Source: loyola-cpe2-rmmassimi 7.8.15.233
-		loyola-cpe1-rmmassim  
+		loyola-cpe1-rmmassimi  
 Destination:	Risposta da un server non autorevole:
 				Nome:    www.pub.luc.edu
 				Address:  147.126.1.230
@@ -16,7 +16,7 @@ Loopback0                  7.8.15.233      YES NVRAM  up                    up
 Virtual-Access1            unassigned      YES unset  up                    up
 Virtual-Access2            unassigned      YES unset  up                    up
 Virtual-Access3            unassigned      YES unset  up                    up
-
+----------------------------------------------------------------------------------
 loyola-cpe2-rmmassimi#ping vrf internet 147.126.1.230 repeat 100 df-bit
 Type escape sequence to abort.
 Sending 100, 100-byte ICMP Echos to 147.126.1.230, timeout is 2 seconds:
@@ -24,3 +24,77 @@ Packet sent with the DF bit set
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 Success rate is 100 percent (100/100), round-trip min/avg/max = 120/124/128 ms
+
+-----------------------------------------------------------------------------------
+loyola-cpe1-rmmassimi#ping 147.126.1.230 repeat 100 df-bit
+Type escape sequence to abort.
+Sending 100, 100-byte ICMP Echos to 147.126.1.230, timeout is 2 seconds:
+Packet sent with the DF bit set
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+Success rate is 100 percent (100/100), round-trip min/avg/max = 109/117/126 ms
+
+------------------------------------------------------------------------------------
+loyola-cpe1-rmmassimi uptime is 1 day, 23 hours, 48 minutes
+System returned to ROM by power-on
+
+loyola-cpe1-rmmassimi#sh clock
+*00:42:16.846 MET Wed Mar 3 1993
+
+loyola-cpe1-rmmassimi#sh logging | in Mar
+*Mar  1 17:13:54 MET: %IP-4-DUPADDR: Duplicate address 77.43.8.157 on Vlan100, sourced by 1ac2.4101.dad1
+-------------------------------------------------------------------------------------
+loyola-cpe2-rmmassimi#sh clock
+11:01:19.268 met Wed May 15 2024
+
+loyola-cpe2-rmmassimi#sh logging | in  May 15
+May 15 10:54:48 met: %IP-4-DUPADDR: Duplicate address 77.43.8.158 on GigabitEthernet0/0, sourced by 18c2.4101.dad1
+
+
+Dall'analisi si evince che a livello network non si riscontrano problematiche di routing o raggiungibilità.
+Si riscontra un duplicate address in Vlan 100 loyola-cpe1,e GigabitEthernet0/0 loyola-cpe2,
+essendo le interfaccie dedicate al servizio internet potrebbe essere che il pacchetto di ritorno dal sito www.luc.edu si fermi al router e non al pc che ha fatto la richiesta, avendo il router il medesimo ip della macchina cliente, una possibile soluzione potrebbe essere far cambiare Ip ai pc del cliente.
+Inoltre sarebbe utile ai fini di identificare la causa del problema avere un riscontro dal cliente su un possibile codice di errore al momento del collegamento a www.luc.edu, es 40x o 50x.
+
+
+----------------------------------------------------------------------------------
+Risposta da un server non autorevole:
+				Nome:    www.pub.luc.edu
+				Address:  147.126.1.230
+				Aliases:  www.luc.edu
+----------------------------------------------------------------------------------
+loyola-cpe2-rmmassimi#ping vrf internet 147.126.1.230 repeat 100 df-bit
+Type escape sequence to abort.
+Sending 100, 100-byte ICMP Echos to 147.126.1.230, timeout is 2 seconds:
+Packet sent with the DF bit set
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+Success rate is 100 percent (100/100), round-trip min/avg/max = 120/124/128 ms
+
+-----------------------------------------------------------------------------------
+loyola-cpe1-rmmassimi#ping 147.126.1.230 repeat 100 df-bit
+Type escape sequence to abort.
+Sending 100, 100-byte ICMP Echos to 147.126.1.230, timeout is 2 seconds:
+Packet sent with the DF bit set
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+Success rate is 100 percent (100/100), round-trip min/avg/max = 109/117/126 ms
+
+------------------------------------------------------------------------------------
+loyola-cpe1-rmmassimi uptime is 1 day, 23 hours, 48 minutes
+System returned to ROM by power-on
+
+loyola-cpe1-rmmassimi#sh clock
+*00:42:16.846 MET Wed Mar 3 1993
+
+loyola-cpe1-rmmassimi#sh logging | in Mar
+*Mar  1 17:13:54 MET: %IP-4-DUPADDR: Duplicate address 77.43.8.157 on Vlan100, sourced by 1ac2.4101.dad1
+-------------------------------------------------------------------------------------
+loyola-cpe2-rmmassimi#sh clock
+11:01:19.268 met Wed May 15 2024
+
+loyola-cpe2-rmmassimi#sh logging | in  May 15
+May 15 10:54:48 met: %IP-4-DUPADDR: Duplicate address 77.43.8.158 on GigabitEthernet0/0, sourced by 18c2.4101.dad1
+
+In caso di dubbi chiamami pure 
+Manuel
