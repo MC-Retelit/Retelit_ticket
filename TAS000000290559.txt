@@ -25,3 +25,8 @@ PING 10.40.0.40 (10.40.0.40): 56 data bytes
 --- 10.40.0.40 ping statistics ---
 1000 packets transmitted, 997 packets received, 0% packet loss
 round-trip min/avg/max = 9.4/11.3/50.7 ms
+
+10.2.5.133
+
+
+FW1-RM940C-Saspi-Roma # diagnose sniffer packet internal1 "host 10.2.5.133 and host 10.40.0.40"
