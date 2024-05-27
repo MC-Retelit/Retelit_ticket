@@ -1,0 +1,86 @@
+da macchina ponte Bifrost 
+ssh:(212.97.35.10:2222) 
+
+mikrotic_cliente_cpe: 195.43.172.49
+user: roo6EiS8
+pass: eiPh7air
+
+[roo6EiS8@Mikrotik] /interface pppoe-client> print
+Flags: X - disabled, R - running
+ 0  R name="PPPoE" max-mtu=auto max-mru=auto mrru=disabled interface=vlan11 user="technosilos@pppoe.kpnqwest.it" password="ts1l0s" profile=default keepalive-timeout=60 service-name="Internet" ac-name=""
+      add-default-route=yes default-route-distance=0 dial-on-demand=no use-peer-dns=no allow=pap,chap,mschap1,mschap2
+
+Flags: X - disabled, R - running, S - slave
+ #    NAME                                                                                   MTU ARP        VLAN-ID INTERFACE
+ 0 R  vlan11                                                                                1500 enabled         11 sfp1
+
+[roo6EiS8@Mikrotik] /ip address> print
+Flags: X - disabled, I - invalid, D - dynamic
+ #   ADDRESS            NETWORK         INTERFACE
+ 0   ;;; default configuration
+     195.43.191.237/30  195.43.191.236  bridge-local
+ 1   109.168.4.29/30    109.168.4.28    bridge-local
+ 2 D 195.43.172.49/32   195.43.163.5    PPPoE
+
+ce1-cal1.mil#sh ip route 195.43.172.49
+Routing entry for 195.43.160.0/19, supernet
+  Known via "ospf 1111", distance 110, metric 20, type extern 2, forward metric 200
+  Last update from 109.168.0.189 on TenGigabitEthernet0/0/26, 7w0d ago
+  Routing Descriptor Blocks:
+  *  , from 195.43.163.100, 7w0d ago, via TenGigabitEthernet0/0/26
+      Route metric is 20, traffic share count is 1
+
+195.43.163.100
+cr1-cal1
+Routing entry for 195.43.172.49/32 Known via "bgp 5602", distance 200, metric 0, type internal Installed Mar 26 05:55:42.664 for 8w3d 
+Routing Descriptor Blocks 195.43.163.5, from 195.43.163.252
+
+195.43.163.252
+vrr1-cal2.mil#sh ip route 195.43.172.49
+Routing entry for 195.43.160.0/19, supernet
+  Known via "ospf 1111", distance 110, metric 20, type extern 2, forward metric 2000
+  Last update from 195.43.160.149 on GigabitEthernet1, 7w0d ago
+  Routing Descriptor Blocks:
+  * 195.43.160.149, from 195.43.163.100, 7w0d ago, via GigabitEthernet1
+      Route metric is 20, traffic share count is 1
+
+195.43.163.5
+ar1-cal1.mil#sh ip route 195.43.172.49
+Routing entry for 195.43.172.49/32
+  Known via "connected", distance 0, metric 0 (connected, via interface)
+  Redistributing via ospf 1111, bgp 5602
+  Advertised by bgp 5602 route-map OSPFtoBGP_CONN
+  Routing Descriptor Blocks:
+  * directly connected, via Virtual-Access2.403
+      Route metric is 0, traffic share count is 1
+
+      ar1-cal1.mil#sh ip route 195.43.172.49
+Routing entry for 195.43.172.49/32
+  Known via "connected", distance 0, metric 0 (connected, via interface)
+  Redistributing via ospf 1111, bgp 5602
+  Advertised by bgp 5602 route-map OSPFtoBGP_CONN
+  Routing Descriptor Blocks:
+  * directly connected, via Virtual-Access2.403
+      Route metric is 0, traffic share count is 1
+ar1-cal1.mil#sh int
+ar1-cal1.mil#sh interfaces Virtual-Access2.403
+Virtual-Access2.403 is up, line protocol is up
+  Hardware is Virtual Access interface
+  Interface is unnumbered. Using address of Loopback5602 (195.43.163.5)
+  MTU 1480 bytes, BW 100000 Kbit/sec, DLY 100000 usec,
+     reliability 255/255, txload 255/255, rxload 198/255
+  Encapsulation PPP, LCP Open
+  Open: IPCP
+  PPPoE vaccess, cloned from Virtual-Template11
+  Vaccess status 0x0
+  Keepalive set (10 sec)
+     1206941767 packets input, 621421737295 bytes
+     1740471004 packets output, 1635585990682 bytes
+  Last clearing of "show interface" counters never
+
+ar1-cal1.mil#show pppoe session | in Vi2.403
+   1200  17272  e48d.8c38.cc66  Gi0/0/2.4011001         11  Vi2.403    PTA
+
+Dall'analisi non risultano evidenze di problemi a livello routing o configurazione,
+per appurare l'effetiva banda disponibile del cliente sarebbe oppurtuno eseguire test IPERF
+dalla CPE al PE

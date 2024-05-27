@@ -1,0 +1,126 @@
+infraweb
+172.29.16.26
+
+Lan cliente
+Vlan1                      10.55.104.201   YES NVRAM  up                    up
+
+10.55.104.202
+
+192.168.10.0/24
+
+0 btac
+3 pc
+2 switch 
+
+dhcp conf
+
+
+
+!
+interface Ethernet0.2
+ description "[058512907359] Lnk VDSL"
+ encapsulation dot1Q 2
+ ip address 172.29.8.86 255.255.255.252
+ ip nat outside
+ ip virtual-reassembly in
+!
+interface FastEthernet0
+ no ip address
+!
+interface FastEthernet1
+ no ip address
+!
+interface FastEthernet2
+ no ip address
+!
+interface FastEthernet3
+ no ip address
+!
+interface Vlan1
+ description "[S4201I0001]Lan Cliente"
+ ip address 10.55.104.201 255.255.255.248
+ ip access-group VGI-Org-ACL in
+ ip access-group GNS-Piemonte out
+ ip nat inside
+ ip virtual-reassembly in
+!
+ip forward-protocol nd
+no ip http server
+no ip http secure-server
+!
+!
+ip nat inside source list 199 interface Loopback199 overload
+ip route 0.0.0.0 0.0.0.0 Ethernet0.2 172.29.8.85
+ip tacacs source-interface Loopback1
+!
+ip access-list extended VGI-Org-ACL
+ permit ip 10.55.104.200 0.0.0.7 10.55.104.200 0.0.0.7
+ permit ip 10.55.0.0 0.0.255.255 10.55.255.0 0.0.0.255
+ permit ip 10.55.0.0 0.0.255.255 10.55.134.0 0.0.0.15
+ permit ip 10.55.0.0 0.0.255.255 10.82.0.0 0.0.15.255
+ permit ip 10.55.0.0 0.0.255.255 10.112.0.0 0.0.255.255
+ permit ip 10.55.0.0 0.0.255.255 host 10.186.115.181
+ permit ip 10.55.0.0 0.0.255.255 80.74.186.128 0.0.0.15
+ permit ip 10.55.104.200 0.0.0.7 10.219.0.0 0.0.255.255
+ deny   ip 10.55.0.0 0.0.255.255 10.0.0.0 0.255.255.255
+ deny   ip 10.55.0.0 0.0.255.255 172.0.0.0 0.31.255.255
+ deny   ip 10.55.0.0 0.0.255.255 192.168.0.0 0.0.255.255
+ permit ip any any
+!
+!
+snmp-server engineID local 00000009020000036BDC121D
+snmp-server community infra-mrtg RO 5
+snmp-server location [PG075C]"Balducci SNC"
+snmp-server contact servizio.clienti@infracom.it
+snmp-server enable traps tty
+tacacs-server host 172.24.252.15
+tacacs-server host 10.3.253.28
+tacacs-server key 7 1421355A4154382C
+access-list 2 permit 217.12.181.17
+access-list 2 permit 80.74.176.60 0.0.0.3
+
+VGI-18203-PG075C-01-Balducci#sh
+VGI-18203-PG075C-01-Balducci#show ip int br
+VGI-18203-PG075C-01-Balducci#show ip int brief
+Interface                  IP-Address      OK? Method Status                Protocol
+ATM0                       unassigned      YES NVRAM  administratively down down
+Ethernet0                  unassigned      YES NVRAM  up                    up
+Ethernet0.2                172.29.8.86     YES NVRAM  up                    up
+FastEthernet0              unassigned      YES unset  up                    up
+FastEthernet1              unassigned      YES unset  up                    down
+FastEthernet2              unassigned      YES unset  up                    up
+FastEthernet3              unassigned      YES unset  up                    up
+Loopback1                  172.29.16.26    YES NVRAM  up                    up
+Loopback199                77.246.14.21    YES NVRAM  up                    up
+NVI0                       172.29.16.26    YES unset  up                    up
+Vlan1                      10.55.104.201   YES NVRAM  up                    up
+VGI-18203-PG075C-01-Balducci#conf t
+Enter configuration commands, one per line.  End with CNTL/Z.
+VGI-18203-PG075C-01-(config)#int
+VGI-18203-PG075C-01-(config)#interface fas
+VGI-18203-PG075C-01-(config)#interface fastEthernet 1
+VGI-18203-PG075C-01-(config-if)#ip add
+VGI-18203-PG075C-01-(config-if)#ip address 192sh int
+VGI-18203-PG075C-01-(config-if)#ex
+VGI-18203-PG075C-01-(config)#ex
+% Ambiguous command:  "ex"
+VGI-18203-PG075C-01-(config)#
+VGI-18203-PG075C-01-Balducci#
+VGI-18203-PG075C-01-Balducci#
+VGI-18203-PG075C-01-Balducci#
+VGI-18203-PG075C-01-Balducci#
+VGI-18203-PG075C-01-Balducci#sh int
+VGI-18203-PG075C-01-Balducci#sh interfaces desc
+VGI-18203-PG075C-01-Balducci#sh interfaces description
+Interface                      Status         Protocol Description
+AT0                            admin down     down
+Et0                            up             up       "[058512907359] VDSL Telecom"
+Et0.2                          up             up       "[058512907359] Lnk VDSL"
+Fa0                            up             up
+Fa1                            up             down
+Fa2                            up             up
+Fa3                            up             up
+Lo1                            up             up       "Loopback per Mng"
+Lo199                          up             up       "Loopback per NAT navigazione"
+NV0                            up             up
+Vl1                            up             up       "[S4201I0001]Lan Cliente"
