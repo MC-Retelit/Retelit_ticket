@@ -2,3 +2,5 @@ snmp-server community tux RO 4
 snmp-server location SEVEN
 snmp-server contact Irideos S.P.A.
 snmp-server enable traps tty
+
+sonde 195.78.207.13 - 14

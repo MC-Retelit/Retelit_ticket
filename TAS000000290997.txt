@@ -2,8 +2,7 @@ da macchina ponte Bifrost
 ssh:(212.97.35.10:2222) 
 
 mikrotic_cliente_cpe: 195.43.172.49
-user: roo6EiS8
-pass: eiPh7air
+
 
 [roo6EiS8@Mikrotik] /interface pppoe-client> print
 Flags: X - disabled, R - running
@@ -45,6 +44,7 @@ Routing entry for 195.43.160.0/19, supernet
       Route metric is 20, traffic share count is 1
 
 195.43.163.5
+----------------------------------------------------------------------------------------
 ar1-cal1.mil#sh ip route 195.43.172.49
 Routing entry for 195.43.172.49/32
   Known via "connected", distance 0, metric 0 (connected, via interface)
@@ -53,8 +53,8 @@ Routing entry for 195.43.172.49/32
   Routing Descriptor Blocks:
   * directly connected, via Virtual-Access2.403
       Route metric is 0, traffic share count is 1
-
-      ar1-cal1.mil#sh ip route 195.43.172.49
+----------------------------------------------------------------------------------------
+ar1-cal1.mil#sh ip route 195.43.172.49
 Routing entry for 195.43.172.49/32
   Known via "connected", distance 0, metric 0 (connected, via interface)
   Redistributing via ospf 1111, bgp 5602
@@ -62,7 +62,7 @@ Routing entry for 195.43.172.49/32
   Routing Descriptor Blocks:
   * directly connected, via Virtual-Access2.403
       Route metric is 0, traffic share count is 1
-ar1-cal1.mil#sh int
+----------------------------------------------------------------------------------------
 ar1-cal1.mil#sh interfaces Virtual-Access2.403
 Virtual-Access2.403 is up, line protocol is up
   Hardware is Virtual Access interface
@@ -77,10 +77,20 @@ Virtual-Access2.403 is up, line protocol is up
      1206941767 packets input, 621421737295 bytes
      1740471004 packets output, 1635585990682 bytes
   Last clearing of "show interface" counters never
-
+----------------------------------------------------------------------------------------
 ar1-cal1.mil#show pppoe session | in Vi2.403
-   1200  17272  e48d.8c38.cc66  Gi0/0/2.4011001         11  Vi2.403    PTA
-
+	1200  17272  e48d.8c38.cc66  Gi0/0/2.4011001         11  Vi2.403    PTA
+----------------------------------------------------------------------------------------
+ar1-cal1.mil#show users all | in Vi2.403
+ 	Interface    User               Mode         Idle     Peer Address
+	Vi2.403      technosilos@pppoe. PPPoE        -        195.43.172.49
+----------------------------------------------------------------------------------------
+ar1-cal1.mil#ping 195.43.172.49 size 1480 df-bit repeat 2000
+Type escape sequence to abort.
+Sending 2000, 1480-byte ICMP Echos to 195.43.172.49, timeout is 2 seconds:
+Packet sent with the DF bit set
+Success rate is 99 percent (1996/2000), round-trip min/avg/max = 5/9/76 ms
+----------------------------------------------------------------------------------------
 Dall'analisi non risultano evidenze di problemi a livello routing o configurazione,
 per appurare l'effetiva banda disponibile del cliente sarebbe oppurtuno eseguire test IPERF
 dalla CPE al PE
