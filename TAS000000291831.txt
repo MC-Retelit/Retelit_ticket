@@ -4,3 +4,7 @@ snmp-server contact Irideos S.P.A.
 snmp-server enable traps tty
 
 sonde 195.78.207.13 - 14
+
+
+
+come specificato dal cliente siamo in attesa di ulteriori verifiche 
