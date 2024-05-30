@@ -139,3 +139,12 @@ ip vrf internet
 !
 
 loyola-cpe1-rmmassim(config)#ip route vrf internet 0.0.0.0 0.0.0.0 Vlan837 213.21.18conf t
+
+
+
+
+
+Come si evince dalle catture e dalle svariate prove effetuate in tempo reale con la sede di Roma, abbiamo piena visibilita del sito 147.126.1.230 a livello routing, il problema di raggiungibilita sussiste nel mancato completamento della TLS handshake con il server quando si tenta di contattare il sito al di fuori della vpn,
+nello specifico ce una differenza di accordo tra le versioni TLS, in VPN si utilizza la V1.2, altrimenti la V1
+questa potrebbe essere una possibile causa della mancata instaurazione del TLS
+Sono per tanto necessarie verifiche lato Server e firewall per poter escludere il problema.

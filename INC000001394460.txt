@@ -1,0 +1,47 @@
+Buonasera,
+  si richiede cortesemente di annunciare internamente verso il nostro peer a Roma (AS 196654) anche la default-route oltre alla full routing table che già ci annunciate. Di seguito l'indirizzo IP del peer: 62.196.53.118
+
+Grazie mille.
+
+manuel.chiocchetta@cnet0-RmDGR-1> show route advertising-protocol bgp 62.196.53.118
+manuel.chiocchetta@cnet0-RmDGR-1> show bgp summary
+manuel.chiocchetta@cnet0-RmDGR-1> show bgp neighbor 62.196.53.118
+
+manuel.chiocchetta@cnet0-RmDGR-1> show configuration policy-options policy-statement DEDA-CLOUD-AS-OUT
+term DENY-ANNOUNCE {
+    from community NoAnn-Out;
+    then reject;
+}
+term PREPEND-1 {
+    from community PrepCustAll-1;
+    then {
+        community delete All-community;
+        as-path-prepend 3302;
+        accept;
+    }
+}
+term PREPEND-5 {
+    from community PrepCustAll-5;
+    then {
+        community delete All-community;
+        as-path-prepend "3302 3302 3302 3302 3302";
+        accept;
+    }
+}
+term ANNOUNCE-FULLROUTING {
+    from community FullRouting;
+    then {
+        community delete All-community;
+        accept;
+    }
+}
+term DEFAULT {
+    from {
+        protocol aggregate;
+        route-filter 0.0.0.0/0 exact;
+    }
+    then accept;
+}
+
+IP Boarder router
+62.196.10.21

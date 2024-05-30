@@ -1,0 +1,18 @@
+how of inasabruzzo-cpe-pepenne dhcpserver wifi-dati
+Enable                       : on
+Description                  :
+First address of pool        : 192.168.50.10
+Last  address of pool        : 192.168.50.254
+Netmask                      : 255.255.255.0
+Address default router       : 192.168.50.1
+Address primary DNS          : 195.78.215.228
+Address secondary DNS        : 195.78.223.228
+Address primary WINS         : 0.0.0.0
+Address secondary WINS       : 0.0.0.0
+Lease Time (sec) (0=Disable) : 86400
+Host name                    : wifi
+Domain name                  : wifiDomain
+TFTP server name             :
+Boot file name               :
+File name                    :
+Next server ip               : 0.0.0.0

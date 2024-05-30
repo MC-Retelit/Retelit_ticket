@@ -1,0 +1,14 @@
+hsibernerspa - BERNER S.P.A.
+sedi:
+	VIALE DELL'ARTIGIANATO 4 70026 MODUGNO (BA) - (....)
+ 	> 7.8.8.4
+
+	VIA ARMANDO DIAZ 30 25010 SAN ZENO NAVIGLIO (BS) - (....)
+	> 7.8.19.6
+
+	VIA DELLA VALTIERA 73 06135 PERUGIA (PG) - (....)
+	> 7.8.21.212 
+
+	VIA DELL'ELETTRONICA 15 37139 VERONA (VR) - (....)
+	> 7.8.14.57
+---------------------------------------------------------------
