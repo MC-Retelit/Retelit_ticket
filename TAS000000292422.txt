@@ -1,4 +1,4 @@
-hsibernerspa - BERNER S.P.A.
+hsi-berner-spa - BERNER S.P.A.
 sedi:
 	VIALE DELL'ARTIGIANATO 4 70026 MODUGNO (BA) - (....)
  	> 7.8.8.4
@@ -12,3 +12,137 @@ sedi:
 	VIA DELL'ELETTRONICA 15 37139 VERONA (VR) - (....)
 	> 7.8.14.57
 ---------------------------------------------------------------
+CREATE GROUP
+berner-cpe-bsszeno(config)#snmp-server group name ?
+  v1   group using the v1 security model
+  v2c  group using the v2c security model
+  v3   group using the User Security Model (SNMPv3)
+
+berner-cpe-bsszeno(config)#snmp-server group name v3 ?
+  auth    group using the authNoPriv Security Level
+  noauth  group using the noAuthNoPriv Security Level
+  priv    group using SNMPv3 authPriv security level
+
+berner-cpe-bsszeno(config)#snmp-server group name v3 priv ?
+  access   specify an access-list associated with this group
+  context  specify a context to associate these views for the group
+  match    context name match criteria
+  notify   specify a notify view for the group
+  read     specify a read view for the group
+  write    specify a write view for the group
+  <cr>
+
+-------------------------------------------------------------------
+CREATE SERVER
+berner-cpe-bsszeno(config)#snmp-server user name ?
+  WORD  Group to which the user belongs
+
+berner-cpe-bsszeno(config)#snmp-server user name groupname ?
+  remote  Specify a remote SNMP entity to which the user belongs
+  v1      user using the v1 security model
+  v2c     user using the v2c security model
+  v3      user using the v3 security model
+
+berner-cpe-bsszeno(config)#snmp-server user name groupname v3 ?
+  access     specify an access-list associated with this group
+  auth       authentication parameters for the user
+  encrypted  specifying passwords as MD5 or SHA digests
+  <cr>
+
+berner-cpe-bsszeno(config)#snmp-server user name groupname v3 md
+berner-cpe-bsszeno(config)#snmp-server user name groupname v3 au
+berner-cpe-bsszeno(config)#snmp-server user name groupname v3 auth ?
+  md5  Use HMAC MD5 algorithm for authentication
+  sha  Use HMAC SHA algorithm for authentication
+
+berner-cpe-bsszeno(config)#snmp-server user name groupname v3 auth m
+berner-cpe-bsszeno(config)#snmp-server user name groupname v3 auth md5 ?
+  WORD  authentication password for user
+
+berner-cpe-bsszeno(config)#snmp-server user name groupname v3 auth md5 pass
+berner-cpe-bsszeno(config)#snmp-server user name groupname v3 auth md5 password ?
+  access  specify an access-list associated with this group
+  priv    encryption parameters for the user
+  <cr>
+
+berner-cpe-bsszeno(config)#snmp-server user name groupname v3 auth md5 password pri
+berner-cpe-bsszeno(config)#snmp-server user name groupname v3 auth md5 password priv ?
+  3des  Use 168 bit 3DES algorithm for encryption
+  aes   Use AES algorithm for encryption
+  des   Use 56 bit DES algorithm for encryption
+
+berner-cpe-bsszeno(config)#snmp-server user name groupname v3 auth md5 password priv aes ?
+  128  Use 128 bit AES algorithm for encryption
+  192  Use 192 bit AES algorithm for encryption
+  256  Use 256 bit AES algorithm for encryption
+
+berner-cpe-bsszeno(config)#snmp-server user name groupname v3 auth md5 password priv aes 256 ?
+  WORD  privacy password for user
+
+berner-cpe-bsszeno(config)#snmp-server user name groupname v3 auth md5 password priv aes 256 password
+
+------------------------------------------------------------------------------
+CONF SNMP ROUTER BRESCIA
+groupname: monitorcliente                   security model:v3 auth
+contextname: <no context specified>         storage-type: nonvolatile
+readview : monitorcliente                   writeview: <no writeview specified>
+notifyview: *tv.FFFFFFFF.FFFFFFFF.FFFFFFFF.F
+row status: active      access-list: HOST-SNMP-CLIENTE
+
+
+
+
+berner-cpe-bsszeno#sh snmp user
+
+User name: snmpcliente
+Engine ID: 800000090300885A92F09910
+storage-type: nonvolatile        active access-list: HOST-SNMP-CLIENTE
+Authentication Protocol: MD5
+Privacy Protocol: None
+Group-name: monitorcliente
+
+
+
+
+snmp-server group monitorcliente v3 auth read monitorcliente access HOST-SNMP-CLIENTE
+snmp-server view monitorcliente interfaces included
+snmp-server view monitorcliente system.1.0 included
+snmp-server view monitorcliente system.2.0 included
+snmp-server view monitorcliente sysUpTime.0 included
+snmp-server view monitorcliente system.4.0 included
+snmp-server view monitorcliente system.5.0 included
+snmp-server view monitorcliente system.6.0 included
+snmp-server view monitorcliente cpmCPUTotalTable included
+snmp-server community tux RO 4
+snmp-server location VIA ARMANDO DIAZ 30 25010 SAN ZENO NAVIGLIO (BS)
+snmp-server contact Irideos Spa
+snmp-server enable traps tty
+snmp-server host 46.228.245.57 version 3 auth snmpcliente
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

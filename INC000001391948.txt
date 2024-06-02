@@ -1,0 +1,114 @@
+source 172.16.13.181 
+destination 172.16.13.3
+
+
+- Quando  il flusso voce  attraversa gli SBC che sono ubicati nel
+"NEXTvdc02_multisite_RESERVED"  e   successivamente viene consegnato  ad
+una macchina pbx che si trova nel NEXTvdc03_multisiteAP oppure
+NEXTvdc01_site ed il flusso transita all'interno delle VM PFsense e
+Fortigate ubicati all'interno del vdc NEXTvdc02_multisite_RESERVED si
+avvertono vuoti di audio
+
+
+
+er1-cal4 	195.43.163.201 v
+er1-cal2	195.43.163.100 v
+er2-cal2	195.43.163.101
+
+
+er1-cal2.mil#
+interface GigabitEthernet1/11
+ description To: NE19 - NEXTIP SRL - Lnk to Retelit
+ ip vrf forwarding NextIP
+ ip address 192.168.251.68 255.255.255.248
+ no ip redirects
+ load-interval 30
+ vrrp 36 ip 192.168.251.70
+ vrrp 36 priority 120
+ no cdp enable
+
+er1-cal2.mil#ping vrf NextIP 172.16.13.3 repeat 1000 df-bit source GigabitEthernet1/11
+
+Type escape sequence to abort.
+Sending 1000, 100-byte ICMP Echos to 172.16.13.3, timeout is 2 seconds:
+Packet sent with a source address of 192.168.251.68
+Packet sent with the DF bit set
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!
+Success rate is 100 percent (1000/1000), round-trip min/avg/max = 1/1/8 ms
+
+er1-cal2.mil#ping vrf NextIP 172.16.13.181 repeat 1000 df-bit source GigabitEthernet1/11
+
+Type escape sequence to abort.
+Sending 1000, 100-byte ICMP Echos to 172.16.13.181, timeout is 2 seconds:
+Packet sent with a source address of 192.168.251.68
+Packet sent with the DF bit set
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!
+Success rate is 100 percent (1000/1000), round-trip min/avg/max = 1/1/8 ms
+------------------------------------------------------------------------------------------
+
+manuel.chiocchetta@er1-cal4.mil> show interfaces routing-instance NextIP
+  Logical interface lsi.10 (Index 374) (SNMP ifIndex 622)
+    Flags: Point-To-Point SNMP-Traps 0x0 Encapsulation: LSI-NULL
+    Input packets : 92
+    Output packets: 0
+    Protocol inet, MTU: 1496
+      Flags: Is-Primary
+    Protocol iso, MTU: 1496
+      Flags: Is-Primary
+    Protocol inet6, MTU: 1496
+      Flags: Is-Primary
+
+
+ NextIP.inet.0: 162 destinations, 322 routes (162 active, 0 holddown, 0 hidden)
++ = Active Route, - = Last Active, * = Both
+
+172.16.13.0/28     *[BGP/170] 4w4d 05:38:06, MED 0, localpref 100, from 195.43.163.163
+                      AS path: 5396 ?
+                    > to 94.141.0.202 via xe-0/0/3.0, Push 30650, Push 362886, Push 685812(top)
+                    [BGP/170] 15:43:10, MED 0, localpref 100, from 195.43.163.222
+                      AS path: 5396 ?
+                    > to 94.141.0.202 via xe-0/0/3.0, Push 30650, Push 362886, Push 685812(top)
+
+NextIP.inet.0: 162 destinations, 322 routes (162 active, 0 holddown, 0 hidden)
++ = Active Route, - = Last Active, * = Both
+
+A Destination        P Prf   Metric 1   Metric 2  Next hop         AS path
+* 172.16.13.0/28     B 170        100          0 >94.141.0.202     5396 ?
+                     B 170        100          0 >94.141.0.202     5396 ?
+
+manuel.chiocchetta@er1-cal4.mil> show bgp summary
+Peer                     AS      InPkt     OutPkt    OutQ   Flaps Last Up/Dwn State|#Active/Received/Accepted/Damped...
+195.43.163.163         5602   15093638    1235853       0       0    56w2d15h Establ
+  ...
+  NextIP.inet.0: 160/160/160/0
+  ...
+
+  
