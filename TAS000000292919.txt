@@ -1,0 +1,164 @@
+janatavpn-ce1-rmpagliari>>system conf
+top
+add aaa PROFILE STRONGAUTH
+add aaa RAC-ACCOUNT local-user tecnonet {--aepwd--}xKrH2ZXHo+s= ADMIN any
+set aaa local-ip-address 7.8.7.222
+add aaa strongauth 195.78.207.35 {--aepwd--}09yRztrs5KXXnsjro+s= 1812
+add aaa strongauth 195.78.215.35 {--aepwd--}09yRztrs5KXXnsjro+s= 1812
+set aaa strongauth account-group local-user
+set aaa strongauth nas-id AETHRA
+set aaa strongauth srv-195.78.207.35 key-value {--aepwd--}09yRztrs5KXXnsjro+s=
+set aaa strongauth srv-195.78.207.35 account-port 1813
+set aaa strongauth srv-195.78.215.35 key-value {--aepwd--}09yRztrs5KXXnsjro+s=
+set aaa strongauth srv-195.78.215.35 account-port 1813
+set system name janatavpn-ce1-rmpagliari
+set system tftp-local-ipaddress 7.8.7.222
+set system aaa-profile STRONGAUTH
+set system scroll-line 0
+set system crypted-passwords on
+add system timesync 195.78.207.38
+add system timesync 195.78.215.38
+add system timesync 195.78.223.38
+set system timesync on
+set system timesync frequency 7200
+set system timesync local-ip-address 7.8.7.222
+set dpa on
+set wlan0 RF-mode b-g-n
+set wlan0 ssid ATOS-NT:wlan0
+set wlan0 nick ATOS-NT:wlan0-NICK
+set wlan1 RF-mode ac-an
+set wlan1 ssid ATOS-NT:wlan1
+set wlan1 nick ATOS-NT:wlan1-NICK
+set wlan1 chan-width 80
+add point-to-point PROFILE PPP pppdati
+add point-to-point PROFILE PPPoE pppoedati
+set point-to-point pppdati authentication username adslmplsnv8031
+set point-to-point pppdati authentication password {--aepwd--}pObasbDD4sE=
+add bridges BRIDGE 0
+set bridges bridge0 on
+add interfaces IFC eth0-2 eth0-2
+add interfaces IFC eth0-3 eth0-3
+add interfaces IFC eth0-4 eth0-4
+add interfaces IFC bridge0 eth0
+add interfaces IFC loopback loopback-dati
+add interfaces IFC loopback loopback-nat
+add interfaces IFC ptm0 802.1QP-PPPoE 835 vlandati
+add interfaces IFC eth0-1 eth0-1
+add bridges bridge0 IFC eth0-2
+add bridges bridge0 IFC eth0-3
+add bridges bridge0 IFC eth0-4
+add bridges bridge0 IFC eth0-1
+add classifier-map acl-mclink 10 permit tcp host 213.21.176.129 router anyport anyport
+add classifier-map acl-mclink 20 permit tcp 7.0.0.0 0.0.255.255 router anyport anyport
+add classifier-map acl-mclink 30 permit tcp 7.255.0.0 0.0.255.255 router anyport anyport
+add classifier-map acl-mclink 40 permit tcp 195.78.223.0 0.0.0.31 router anyport anyport
+add classifier-map acl-mclink 50 permit tcp 195.78.215.0 0.0.0.31 router anyport anyport
+add classifier-map acl-mclink 60 permit tcp 195.78.207.0 0.0.0.31 router anyport anyport
+add classifier-map acl-mclink 70 permit tcp host 10.100.0.7 router anyport anyport
+add classifier-map acl-mclink 80 permit tcp host 10.100.0.8 router anyport anyport
+add classifier-map acl-mclink 90 permit tcp 192.168.2.0 0.0.0.255 router anyport anyport
+add classifier-map acl-mclink 91 permit tcp 10.10.10.0 0.0.0.255 router anyport anyport
+add classifier-map acl-mclink 92 permit tcp 192.168.2.0 0.0.0.255 router anyport anyport
+add classifier-map acl-mclink 160 deny tcp any router anyport equ telnet
+add classifier-map acl-mclink 170 deny tcp any router anyport equ http
+add classifier-map acl-mclink 180 deny tcp any router anyport equ 443
+add classifier-map acl-mclink 190 deny tcp any router anyport equ 22
+add classifier-map acl-mclink 200 deny tcp any router anyport equ dns
+add classifier-map acl-mclink 210 deny udp any router anyport equ dns
+add classifier-map acl-mclink 220 deny udp any router anyport equ 5060
+add classifier-map acl-mclink 230 permit anyprot any any
+add classifier-map nat-internet 10 deny anyprot 192.168.100.16 0.0.0.7 10.0.0.0 0.255.255.255
+add classifier-map nat-internet 20 deny anyprot 192.168.100.16 0.0.0.7 172.16.0.0 0.15.255.255
+add classifier-map nat-internet 30 deny anyprot 192.168.100.16 0.0.0.7 192.168.0.0 0.0.255.255
+add classifier-map nat-internet 40 permit anyprot 192.168.100.16 0.0.0.7 any
+set interfaces eth0 description LAN-CLIENTE
+set interfaces eth0 ip address 192.168.100.18/29
+set interfaces loopback-dati description Loopback per Management
+set interfaces loopback-dati ip address 7.8.7.222/32
+set interfaces loopback-nat description LOOPBACK-NAT-INTERNET
+set interfaces loopback-nat ip address 77.246.6.23/32
+set interfaces vlandati service-ppp ppp-profile pppdati
+set interfaces vlandati service-ppp pppoe-profile pppoedati
+add dns SERVER anydomain 195.78.215.228 195.78.223.228 1
+set dns on
+add ip route 192.168.3.0 255.255.255.0 192.168.100.20 1
+add ip route 192.168.200.0 255.255.255.0 192.168.100.20 1
+add ip bgp BGP as65005 65005
+add ip bgp as65005 NEIGHBOR 10.100.0.7 5396
+add ip bgp as65005 NEIGHBOR 10.100.0.8 5396
+add ip bgp as65005 NETWORK 7.8.7.222/32
+add ip bgp as65005 NETWORK 192.168.100.16/29
+add ip bgp as65005 NETWORK 77.246.6.23/32
+add ip bgp as65005 NETWORK 192.168.3.0/24
+add ip bgp as65005 NETWORK 192.168.200.0/24
+set ip bgp as65005 on
+set ip bgp as65005 as-number 65005
+set ip bgp as65005 neighbor-10.100.0.7 as-number 5396
+set ip bgp as65005 neighbor-10.100.0.8 as-number 5396
+add vrrp INSTANCE vrrp1
+add vrrp INSTANCE vrrp3
+add vrrp vrrp1 192.168.100.17
+set vrrp vrrp1 on
+set vrrp vrrp1 vrrp-interface eth0
+set vrrp vrrp1 local-address-or-ifc-name eth0
+set vrrp vrrp1 vrid 1
+set vrrp vrrp1 priority 105
+set vrrp vrrp1 delay-until-preemption 60
+set vrrp vrrp1 handle-virtual-mac-address false
+set vrrp vrrp1 gateway-interface vlandati
+set vrrp vrrp1 priority-decrement 10
+add vrrp vrrp3 10.10.10.1
+set vrrp vrrp3 on
+set vrrp vrrp3 vrrp-interface eth0
+set vrrp vrrp3 local-address-or-ifc-name eth0
+set vrrp vrrp3 vrid 3
+set vrrp vrrp3 priority 105
+set vrrp vrrp3 delay-until-preemption 60
+set vrrp vrrp3 gateway-interface vlandati
+set vrrp vrrp3 priority-decrement 10
+add napt IFC vlandati
+set napt udptimeout 120
+add napt vlandati MAP 192.168.100.16 255.255.255.248 77.246.6.23
+add napt vlandati HOLE 77.246.6.23 255.255.255.255
+add napt vlandati HOLE 7.8.7.222 255.255.255.255
+set napt vlandati on
+set napt vlandati classifier nat-internet
+add snmp COMMUNITIES tux RO V1-V2c default_view
+set snmp on
+set snmp syscontact servizigestiti@mclink.eu
+set snmp syslocation janatavpn rmpagliari
+Command executed
+
+------------------------------------------------------------------
+Device cliente in India Banga
+interface Tunnel150
+ description "Tunnel GRE di emergenza to PE-VR-278-07-Meucci-IPSec"
+ ip address 172.29.30.226 255.255.255.252
+ tunnel source 115.127.114.62
+ tunnel destination 217.12.189.140
+
+interface Virtual-PPP1
+ description "Tunnel L2TP to PE-VR-278-07-Meucci-IPSec"
+ bandwidth 1000
+ ip unnumbered Loopback0
+ ip virtual-reassembly in
+ load-interval 30
+ ppp chap hostname 19257-EE227C
+ ppp chap password 7 091D175B4C525A372E5E567D08
+ no cdp enable
+ pseudowire 217.12.178.221 1 encapsulation l2tpv2 pw-class pwclass1
+
+----------------------------------------------------------------
+Device dove atterra il tunnel
+ PE-VR-278-07-Meucci-IPSec#sh run int Tu150
+Building configuration...
+
+Current configuration : 226 bytes
+!
+interface Tunnel150
+ description " connessione TEST  con 19257-EE227C-01-JanataBangladesh"
+ ip vrf forwarding Janata
+ ip address 172.29.30.225 255.255.255.252
+ tunnel source Loopback1
+ tunnel destination 115.127.114.62
+end

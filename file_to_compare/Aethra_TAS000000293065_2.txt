@@ -1,0 +1,149 @@
+top
+add aaa PROFILE STRONGAUTH 
+add aaa RAC-ACCOUNT local-user tecnonet {--aepwd--}xKrH2ZXHo+s= ADMIN any 
+set aaa local-ip-address 7.8.18.234
+add aaa strongauth 195.78.207.35 {--aepwd--}09yRztrs5KXXnsjro+s= 1812 
+add aaa strongauth 195.78.215.35 {--aepwd--}09yRztrs5KXXnsjro+s= 1812 
+set aaa strongauth account-group local-user
+set aaa strongauth nas-id AETHRA
+set aaa strongauth srv-195.78.207.35 key-value {--aepwd--}09yRztrs5KXXnsjro+s=
+set aaa strongauth srv-195.78.207.35 account-port 1813
+set aaa strongauth srv-195.78.215.35 key-value {--aepwd--}09yRztrs5KXXnsjro+s=
+set aaa strongauth srv-195.78.215.35 account-port 1813
+set system name farmacievpn-ce1-rmbufalini
+set system tftp-local-ipaddress 7.8.18.234
+set system aaa-profile STRONGAUTH
+set system scroll-line 0
+set system crypted-passwords on
+add system timesync 195.78.207.38 
+add system timesync 195.78.215.38 
+add system timesync 195.78.223.38 
+set system timesync on
+set system timesync frequency 7200
+set system timesync local-ip-address 7.8.18.234
+set wlan0 off
+set wlan0 RF-mode b-g-n
+set wlan0 ssid ATOS-NT:wlan0
+set wlan0 nick ATOS-NT:wlan0-NICK
+add point-to-point PROFILE PPP pppdati 
+add point-to-point PROFILE PPP pppvoce 
+add point-to-point PROFILE PPPoE pppoedati 
+add point-to-point PROFILE PPPoE pppoevoce 
+set point-to-point pppdati authentication username adslmplsnk6714
+set point-to-point pppdati authentication password {--aepwd--}3Ke+rtexxKs=
+set point-to-point pppvoce authentication username adslmplsnk6714v
+set point-to-point pppvoce authentication password {--aepwd--}6ObLz7/r4+U=
+add interfaces IFC eth0 eth0 
+add interfaces IFC loopback loopback-dati 
+add interfaces IFC ptm0 802.1QP-PPPoE 835 vlandati 
+add interfaces IFC ptm0 802.1QP-PPPoE 836 vlanvoce 
+add interfaces IFC loopback loopback-hpbx 
+add interfaces IFC eth0 802.1QP 10 dati-hpbx-be 
+add interfaces IFC eth0 802.1QP 20 voce-hpbx 
+set interfaces eth0 description LAN-MGMT-MERAKI
+set interfaces eth0 ip address 10.255.32.2/24
+set interfaces loopback-dati description Loopback per Management
+set interfaces loopback-dati ip address 7.8.18.234/32
+set interfaces vlandati service-ppp ppp-profile pppdati
+set interfaces vlandati service-ppp pppoe-profile pppoedati
+set interfaces vlanvoce service-ppp ppp-profile pppvoce
+set interfaces vlanvoce service-ppp pppoe-profile pppoevoce
+set interfaces loopback-hpbx description LOOPBACK-NAT-HPBX
+set interfaces loopback-hpbx ip address 7.19.1.165/32
+set interfaces dati-hpbx-be description LAN-DATI-HPBX-BE
+set interfaces dati-hpbx-be ip address 192.168.32.2/24
+set interfaces voce-hpbx description LAN-VOCE-HPBX
+set interfaces voce-hpbx ip address 192.168.20.2/24
+add dhcpserver IFC eth0 
+add dhcpserver IFC dati-hpbx-be 
+add dhcpserver IFC voce-hpbx 
+set dhcpserver on
+set dhcpserver eth0 startaddress 10.255.32.10
+set dhcpserver eth0 endaddress 10.255.32.127
+set dhcpserver eth0 netmask 255.255.255.0
+set dhcpserver eth0 defaultrouter 10.255.32.1
+set dhcpserver eth0 dns1 195.78.215.228
+set dhcpserver eth0 dns2 195.78.223.228
+set dhcpserver eth0 hostname MGMT-MERAKI
+set dhcpserver eth0 domainname MerakiDomain
+set dhcpserver dati-hpbx-be startaddress 192.168.32.250
+set dhcpserver dati-hpbx-be endaddress 192.168.32.251
+set dhcpserver dati-hpbx-be netmask 255.255.255.0
+set dhcpserver dati-hpbx-be defaultrouter 192.168.32.1
+set dhcpserver dati-hpbx-be dns1 81.27.187.30
+set dhcpserver dati-hpbx-be dns2 81.27.187.28
+set dhcpserver dati-hpbx-be hostname dati-hpbx-be
+set dhcpserver dati-hpbx-be domainname DatiHPBXDomain
+set dhcpserver dati-hpbx-be server-name http://provisioning.infracom.it/sip-ps/
+set dhcpserver voce-hpbx startaddress 192.168.20.10
+set dhcpserver voce-hpbx endaddress 192.168.20.254
+set dhcpserver voce-hpbx netmask 255.255.255.0
+set dhcpserver voce-hpbx defaultrouter 192.168.20.1
+set dhcpserver voce-hpbx dns1 81.27.187.30
+set dhcpserver voce-hpbx dns2 81.27.187.28
+set dhcpserver voce-hpbx hostname Voce-HPBX
+set dhcpserver voce-hpbx domainname VoceHPBXDomain
+set dhcpserver voce-hpbx server-name http://provisioning.infracom.it/sip-ps/
+add dns SERVER anydomain 195.78.215.228 195.78.223.228 1 
+set dns on
+add ip bgp BGP as65115 65115 
+add ip bgp as65115 NEIGHBOR 7.1.2.60 5396 
+add ip bgp as65115 NEIGHBOR 7.1.2.61 5396 
+add ip bgp as65115 NEIGHBOR 10.100.0.7 5396 
+add ip bgp as65115 NEIGHBOR 10.100.0.8 5396 
+add ip bgp as65115 NETWORK 7.8.18.234/32 
+add ip bgp as65115 NETWORK 7.19.1.165/32 
+add ip bgp as65115 NETWORK 192.168.32.0/24 
+add ip bgp as65115 NETWORK 10.255.32.0/24 
+set ip bgp as65115 on
+set ip bgp as65115 as-number 65115
+set ip bgp as65115 neighbor-7.1.2.60 as-number 5396
+set ip bgp as65115 neighbor-7.1.2.61 as-number 5396
+set ip bgp as65115 neighbor-10.100.0.7 as-number 5396
+set ip bgp as65115 neighbor-10.100.0.8 as-number 5396
+add vrrp INSTANCE vrrp1 
+add vrrp INSTANCE vrrp2 
+add vrrp INSTANCE vrrp3 
+add vrrp vrrp1 192.168.32.1 
+set vrrp vrrp1 on
+set vrrp vrrp1 vrrp-interface dati-hpbx-be
+set vrrp vrrp1 vrid 1
+set vrrp vrrp1 priority 105
+set vrrp vrrp1 delay-until-preemption 60
+set vrrp vrrp1 gateway-interface vlandati
+set vrrp vrrp1 priority-decrement 10
+add vrrp vrrp2 10.255.32.1 
+set vrrp vrrp2 on
+set vrrp vrrp2 vrrp-interface eth0
+set vrrp vrrp2 vrid 2
+set vrrp vrrp2 priority 105
+set vrrp vrrp2 delay-until-preemption 60
+set vrrp vrrp2 gateway-interface vlandati
+set vrrp vrrp2 priority-decrement 10
+add vrrp vrrp3 192.168.20.1 
+set vrrp vrrp3 on
+set vrrp vrrp3 vrrp-interface voce-hpbx
+set vrrp vrrp3 vrid 3
+set vrrp vrrp3 priority 105
+set vrrp vrrp3 delay-until-preemption 60
+set vrrp vrrp3 gateway-interface vlanvoce
+set vrrp vrrp3 priority-decrement 10
+add napt IFC vlanvoce 
+set napt udptimeout 120
+add napt vlanvoce MAP 192.168.20.0 255.255.255.0 7.19.1.165 
+add napt vlanvoce MAP 192.168.32.0 255.255.255.0 7.19.1.165 
+set napt vlanvoce on
+add qos CLASSIFIER cl-voip 
+add qos POLICY markvoip 
+add qos POLICY traffic-policy PRIORITY PRIO 
+add qos SERVICE vlanvoce markvoip 
+add qos SERVICE ptm0 traffic-policy 
+add qos markvoip VLAN_PRIO 5 cl-voip 
+add qos markvoip DSCP 46 cl-voip 
+add qos traffic-policy QUEUE voce 1 
+set qos traffic-policy voce priority 1
+add snmp COMMUNITIES tux RO V1-V2c default_view 
+set snmp on
+set snmp syscontact Irideos
+set snmp syslocation VIA LEONARDO BUFALINI 35 00176 ROMA (RM)
+Command executed

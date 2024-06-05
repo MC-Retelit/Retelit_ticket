@@ -1,0 +1,11 @@
+ ip-194-154.sn3.clouditalia.com [194.153.194.154]
+
+ Traccia instradamento verso ip-194-154.sn3.clouditalia.com [194.153.194.154]
+su un massimo di 30 punti di passaggio:
+
+  1    <1 ms    <1 ms    <1 ms  10.218.68.1
+  2     2 ms     2 ms     2 ms  217.12.176.138
+  3     6 ms     2 ms     2 ms  94.138.42.233
+  4     5 ms     5 ms     5 ms  37.32.107.137
+  5    12 ms    13 ms    13 ms  37.32.106.6
+  6    15 ms    15 ms    15 ms  ip-194-154.sn3.clouditalia.com [194.153.194.154]
