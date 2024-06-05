@@ -1,0 +1,76 @@
+C:\Users\ManuelChiocchetta\Desktop\Retelit_ticket>tracert 147.126.1.230
+
+Traccia instradamento verso physics.luc.edu [147.126.1.230]
+su un massimo di 30 punti di passaggio:
+
+  1    <1 ms    <1 ms    <1 ms  10.218.68.1
+  2     1 ms     2 ms     2 ms  217.12.176.138 
+  3     1 ms    <1 ms    <1 ms  94.138.42.233
+  4    <1 ms    <1 ms    <1 ms  62.196.32.81
+  5    <1 ms    <1 ms    <1 ms  62.196.4.161
+  6     9 ms     8 ms     8 ms  37.32.106.65 ->>> Irideos
+  7     9 ms    10 ms    10 ms  et0-0-33.roma54.rom.seabone.net [89.221.32.40] 
+  8   112 ms    96 ms    96 ms  ae20.newyork51.new.seabone.net [195.22.195.49]  ->>> sparkle Telecom
+  9   105 ms     *        *     192.205.36.229
+ 10     *        *        *     Richiesta scaduta.
+ 11     *        *        *     Richiesta scaduta.
+ 12   121 ms   126 ms   126 ms  32.130.17.77 
+ 13   119 ms   119 ms   119 ms  cgcil409me9.ip.att.net [12.122.99.97]  
+ 14   119 ms   119 ms   119 ms  12.246.90.110  ->>> AT&T
+ 15   121 ms   121 ms   121 ms  147.126.95.93 
+ 16   121 ms   122 ms   121 ms  dmz-lsc.rtr.luc.edu [147.126.95.17] 
+ 17   122 ms   122 ms   123 ms  147.126.46.131 
+ 18     *        *        *     Richiesta scaduta. 
+ 19   123 ms   122 ms   122 ms  physics.luc.edu [147.126.1.230]  ->>> Loyola  
+ ------------------------------------------------------------------------
+ loyola-cpe1-rmmassimi#traceroute vrf internet 147.126.1.230
+
+Type escape sequence to abort.
+Tracing the route to 147.126.1.230
+
+  1 213.21.180.211 0 msec 8 msec 0 msec
+  2 213.21.133.127 17 msec 50 msec 17 msec
+  3 213.21.133.129 17 msec 17 msec 17 msec
+  4 213.21.132.150 16 msec 17 msec 17 msec
+  5 213.21.133.131 17 msec 16 msec 17 msec
+  6 213.21.133.133 17 msec 17 msec 17 msec
+  7 213.21.133.135 0 msec 8 msec 0 msec
+  8 37.32.106.194 8 msec 9 msec 16 msec
+  9 37.32.106.1 0 msec
+    37.32.106.65 9 msec 0 msec ->>> Irideos
+ 10 89.221.32.40 8 msec 0 msec 9 msec 
+ 11 195.22.195.63 109 msec 109 msec
+    195.22.195.49 100 msec ->>> sparkle Telecom XX
+ 12  *  *  *
+ 13  *  *  *
+ 14  *  *  *
+ 15 32.130.17.77 109 msec 125 msec 118 msec 
+ 16 12.122.99.97 117 msec 118 msec 109 msec
+ 17 12.246.90.110 117 msec 118 msec 117 msec ->>> AT&T
+ 18 147.126.95.93 118 msec 117 msec 117 msec 
+ 19 147.126.95.17 118 msec 117 msec 126 msec
+ 20 147.126.46.131 118 msec 117 msec 126 msec
+ 21  *  *  *
+ 22 147.126.1.230 118 msec 125 msec 118 msec ->>> Loyola
+--------------------------------------------------------------------------
+loyola-cpe2-rmmassimi#traceroute vrf internet 147.126.1.230
+Type escape sequence to abort.
+Tracing the route to 147.126.1.230
+VRF info: (vrf in name/id, vrf out name/id)
+  1 37.32.104.21 8 msec 8 msec 8 msec
+  2 37.32.106.1 4 msec 4 msec
+    37.32.106.65 8 msec ->>> Irideos
+  3 89.221.32.40 12 msec 20 msec 4 msec
+  4 195.22.195.63 104 msec 100 msec ->>> sparkle Telecom XX
+    195.22.195.49 100 msec
+  5 192.205.36.229 108 msec 108 msec 116 msec 
+  6  *  *  *
+  7  *  *  *
+  8 32.130.17.77 [MPLS: Label 24687 Exp 0] 120 msec 124 msec 124 msec 
+  9 12.122.99.97 120 msec 120 msec 116 msec
+ 10 12.246.90.110 124 msec 116 msec 120 msec ->>> AT&T
+ 11 147.126.95.93 120 msec 116 msec 120 msec
+ 12 147.126.95.17 124 msec 124 msec 124 msec
+ 13 147.126.46.131 196 msec 120 msec 116 msec 
+ 14  *  *  *
+ 15 147.126.1.230 124 msec 116 msec 124 msec ->>> Loyola
