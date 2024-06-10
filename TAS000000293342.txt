@@ -1,0 +1,11 @@
+ce11-cal1.mil#traceroute 195.43.172.49
+Type escape sequence to abort.
+Tracing the route to 195.43.172.49
+VRF info: (vrf in name/id, vrf out name/id)
+  1 10.11.11.65 [MPLS: Label 443 Exp 0] 0 msec 0 msec 4 msec
+  2 109.168.0.189 [MPLS: Label 64677 Exp 0] 0 msec 4 msec 0 msec
+  3 109.168.0.50 0 msec 0 msec 0 msec
+  4 109.168.0.49 [MPLS: Label 64057 Exp 0] 0 msec 0 msec 4 msec
+  5 109.168.0.210 0 msec 0 msec 4 msec
+  6 195.43.172.49 4 msec 4 msec 4 msec
+ce11-cal1.mil#
