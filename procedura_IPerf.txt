@@ -1,0 +1,28 @@
+Procedura iperf
+
+server IPerf
+ip{
+	link : https://rete.corporate.irideos.it/wiki/speedtest
+}
+
+comandi_iperf_server{
+
+aggiunta di un singolo IP :
+sudo iptables -I INPUT -s 1.2.3.4 -j ACCEPT
+
+aggiunta di una subnet :
+sudo iptables -I INPUT -s 1.2.3.4/255.255.255.248 -j ACCEPT
+ 
+rimozione di un singolo IP :
+sudo iptables -D INPUT -s 1.2.3.4 -j ACCEPT
+
+rimozione di una subnet :
+sudo iptables -D INPUT -s 1.2.3.4/255.255.255.248 -j ACCEPT
+
+lista subnet installate :
+sudo iptables -L -n
+
+comando per esegeuire test:
+iperf3 -c {indirizzo ip} -4 --connect-timeout 5000 -f m -b {ampiezza flusso} -P 4 -t 15 --omit 3 -u -l 1472 {-R | "None"}
+
+}

@@ -312,3 +312,74 @@ set snmp on
 set snmp syscontact Irideos
 set snmp syslocation VIA LEONARDO BUFALINI 35 00176 ROMA (RM)
 Command executed
+
+
+
+
+
+
+farmacievpn-ce1-rmbufalini>>tracert 8.8.8.8 vrf global
+traceroute to 8.8.8.8 (8.8.8.8), 30 hops max, 38 byte packets
+ 1  10.100.0.7 (10.100.0.7)  8.749 ms  5.735 ms  5.811 ms
+ 2  37.32.106.70 (37.32.106.70)  6.183 ms  6.409 ms  5.792 ms
+ 3  10.1.0.163 (10.1.0.163)  5.714 ms  5.464 ms  5.553 ms
+
+37.207.131.66
+
+
+
+
+
+C:\Users\Manuel\Desktop\Retelit_ticket>ping 37.207.131.66
+
+Pinging 37.207.131.66 with 32 bytes of data:
+Reply from 37.207.131.66: bytes=32 time=19ms TTL=118
+Reply from 37.207.131.66: bytes=32 time=17ms TTL=118
+Reply from 37.207.131.66: bytes=32 time=18ms TTL=118
+Reply from 37.207.131.66: bytes=32 time=19ms TTL=118
+
+Ping statistics for 37.207.131.66:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 17ms, Maximum = 19ms, Average = 18ms
+
+C:\Users\Manuel\Desktop\Retelit_ticket>ping n285.meraki.com
+
+Pinging fra645.meraki.com [158.115.144.228] with 32 bytes of data:
+Reply from 158.115.144.228: bytes=32 time=15ms TTL=54
+Reply from 158.115.144.228: bytes=32 time=15ms TTL=54
+Reply from 158.115.144.228: bytes=32 time=15ms TTL=54
+Reply from 158.115.144.228: bytes=32 time=15ms TTL=54
+
+
+
+farmacievpn-ce1-rmbufalini>ping 158.115.144.228
+PING 158.115.144.228 (158.115.144.228): 32 data bytes
+
+--- 158.115.144.228 ping statistics ---
+3 packets transmitted, 0 packets received, 100% packet loss
+Command executed
+farmacievpn-ce1-rmbufalini>>
+
+farmacievpn-ce1-rmbufalini\arp>>show work
+Show of farmacievpn-ce1-rmbufalini arp
+Level of log       : 1
+Used local address : any-addr
+
+LIST OF ARP ENTRIES
+  IP ADDRESS          MAC ADDRESS         VRF
+  10.255.32.11        0C-8D-DB-7D-CA-9B   global
+  192.168.20.11       80-5E-C0-C7-8C-BF   global
+  192.168.20.12       00-15-65-FE-FA-6B   global
+  10.255.32.11        0C-8D-DB-7D-CA-9B   global
+  192.168.20.11       80-5E-C0-C7-8C-BF   global
+  192.168.32.130      98-29-A6-82-D5-0C   global
+  192.168.20.12       00-15-65-FE-FA-6B   global
+
+
+
+
+
+bologna bentini
+7.8.15.252
+
