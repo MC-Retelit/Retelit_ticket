@@ -1,0 +1,66 @@
+/*
+ * Copyright © 2006 BMC Software, Inc. All rights reserved.
+ * 
+ * This software is the confidential property and proprietary information of BMC
+ * Software, Inc.
+ */
+
+//your JS function
+function myARFormEventHandler(eventType, eventData) {
+    var elmt = document.getElementById("h1str");
+    elmt.innerText = eventData;
+    
+    //alert("DVF got message from parent AR Form.\nEvent Type: " + eventType +
+    //        "\nEvent Data: " + eventData + "\n\nPassing the event to Mid-Tier.");
+    
+    var result = Controller.sendEventToMidTier(eventType, eventData);
+    elmt.innerText = result;
+    
+    //alert("DVF got result back from server.\nResult is: " + result +"\n\nPassing result to parent AR Form.");
+    Controller.sendEventToParentForm("event-from-plugin", result + " Then processed by client-side plugin.");
+}
+
+//this is an example of AJAX at work. The framework provides a layer of
+//abstraction to make AJAX a piece of cake.
+function myIconOnclickHandler(event) {
+    //var elmt = document.getElementById("h1str");    
+	//var result = Controller.sendEventToMidTier("AJAX", "");
+    //alert ("this is " + result);
+    //elmt.innerText = result;
+	Controller.sendEventToParentForm("event-from-plugin", " Then processed by client-side plugin.");
+	
+}
+
+function arEventFormOpenHandler(eventType, eventData)
+{
+	var allStrings = eventData.split(",");
+	var serverName = allStrings[0];
+	var serverForm = allStrings[1];
+	var serverView = allStrings[2];
+	var serverQual = allStrings[3];
+    var elmt = document.getElementById("h1str");
+    
+	var result = Controller.sendEventToMidTier("parent-arform-event-open", "");
+    //alert ("this is " + result);
+    //elmt.innerText = result;
+    
+	Controller.parentDispatcher.drillDownToForm(serverName, serverForm, serverView, serverQual);
+    //alert ("Server: " + serverName + " Form: " + serverForm + " View: " + serverView + " Qual: " + serverQual);
+}
+
+function initSetupScript() {
+    //setup plugin communication channel. The EventDispatcher is supplied
+    //by plugin framework during runtime. We took care of centralizing
+    //the code into JS Singleton object Controller adding additional methods
+    //useful in our framework.
+    Controller = new BaseController(EventDispatcher);
+    
+    //register your JS function via event type tag as sent in from AR Form
+    //Controller.registerDVFHandler("parent-arform-event", myARFormEventHandler);
+    Controller.registerDVFHandler("parent-arform-event", arEventFormOpenHandler); //Event from AR AL - DRILL DOWN (qual sent to it from AR AL) Opens Form from MidTier
+    
+    Controller.registerDVFHandler("parent-arform-event-aropen", myARFormEventHandler); //Event from AR AL - Opens Form from AR
+    
+    Controller.registerOnclickHandler("image-icon",myIconOnclickHandler); // Click to get info from AJAX      
+}
+

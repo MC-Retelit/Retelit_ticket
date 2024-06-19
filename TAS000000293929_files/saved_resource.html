@@ -1,0 +1,302 @@
+
+<!-- saved from url=(0232)https://servizioclienti.irideos.it/arsys/plugins/SlmDVF/params?server=prod_arsys&flashboard=&name=&height=44&width=50&rtl=ltr&fieldid=303579500&windowID=6&schema=HPD%3AHelp%20Desk&view=Best%20Practice%20View&action=setvalue&param1=0 -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>
+Sample Plugin</title>
+<script>var EventDispatcher=new function() {
+
+    var fieldID="303579500";
+	var windowID="6";
+    var midTierEventURL="../../pluginsignal/SlmDVF";
+    var midTierContextPath="../../";
+    var mServer="prod_arsys";
+    var appName="";
+    var tabKey = 9;
+    var mSetEnable = false;
+
+    this.createMidTierEvent=function(et,ed,cb) {
+    	return new function() {
+    		var fetcher;
+    		try {
+    			/*ie5, saf, moz*/
+    			fetcher=new XMLHttpRequest();
+    		} catch(e){
+    			try {
+    				fetcher=new ActiveXObject("Msxml2.XMLHTTP");
+    			} catch(e){
+    				try {
+    					fetcher=new ActiveXObject("Microsoft.XMLHTTP");
+    				}
+    				catch (e) {
+    					/*can't pull in assert because runs on web and WUT*/
+    				}
+    			};
+    		};
+    		var async = (typeof cb=="function");
+    		fetcher.open("POST",midTierEventURL,async);
+    		fetcher.setRequestHeader("Content-type","application/x-www-form-urlencoded; charset=UTF-8");
+    		var rtl = document.documentElement.parentNode.dir;
+    		var params = "server="+encodeURIComponent(mServer)+"&rtl="+rtl+"&windowID="+windowID+"&fieldid="+fieldID+"&eventtype="+encodeURIComponent(et)+"&eventdata="+encodeURIComponent(ed);
+    		var eventStatus=0;
+
+    		if (async) {
+    			fetcher.onreadystatechange = function() {
+    				if (fetcher.readyState==4 && fetcher.status==200 && fetcher.responseText) {
+    					cb.call();
+    				} else {
+    					if (fetcher.readyState==4 && fetcher.status!=200) {
+    						if (fetcher.status == 0 && fetcher.responseText != "") {
+    						var errmsg = top.getLocalizedMessage(9351,null,null);
+    						alert(errmsg);
+    						throw exception;
+    						}
+    					}
+    				}
+                }
+    		}
+    		
+    		this.send=function() {
+    			try {
+    				fetcher.send(params);
+    			} catch(e){
+    				if (fetcher.readyState==4&&fetcher.status!=200) {
+    					var errmsg = top.getLocalizedMessage(9351,null,null);
+    					alert(errmsg);
+    				}
+    				throw e;
+    			}
+    			// Timeout case 
+    			if (fetcher.readyState==4&&fetcher.status!=200) {
+   					var errmsg = top.getLocalizedMessage(9351,null,null);
+   					alert(errmsg);
+   					throw exception;
+   				}
+    		}
+
+    		this.abort=function() {
+    			fetcher.abort();
+    		}
+
+    		this.sendCompleted=function() {
+    			return (fetcher.readyState==4);
+    		}
+
+    		this.resultAvailable=function() {
+    			return (fetcher.readyState==4&&fetcher.status==200);
+    		}
+
+    		this.getResultAsXML=function() {
+    			return fetcher.responseXML;
+    		}
+
+    		this.getResultAsString=function() {
+    			return fetcher.responseText;
+    		}
+    	}
+    }
+
+    this.sendEventToMidTier=function(et, ed) {
+    	var mtEvt = this.createMidTierEvent(et,ed,null);
+    	mtEvt.send();
+    	return mtEvt.getResultAsString();
+    };
+
+    this.tabForward=function() {
+    	var shiftPressed = (event.shiftKey || event.shiftLeft) ? true : false;
+    	if (!shiftPressed && event.keyCode == tabKey) {
+    		try {
+    			if("external" in window && "arJumpOutForward" in window.external) {
+    				setTimeout("window.external.arJumpOutForward()",500);
+    				return;
+    			}
+    		} catch(e) {
+    		}
+    		return parent.DView.tabForward();
+    	}
+    };
+
+    this.tabBackward=function() {
+    	var shiftPressed = (event.shiftKey || event.shiftLeft) ? true : false;
+    	if (shiftPressed && event.keyCode == tabKey) {
+    		try {
+    			if("external" in window && "arJumpOutBackward" in window.external) {
+    				setTimeout("window.external.arJumpOutBackward()", 500);
+    				return;
+    			}
+    		} catch(e) {
+    		}
+    		return parent.DView.tabBackward();
+    	}
+    };
+
+    this.sendEventToParentForm=function(eventType,eventData) {
+    	try {
+    		if("external" in window && "SendSignal" in window.external) {
+    			return window.external.SendSignal(windowID+"",fieldID+"",eventType+"",eventData+"");
+    		}
+    	} catch(e) {
+    	}
+    	return parent.DView.SendSignalToParent(windowID+"","F"+fieldID,eventType+"",eventData+"");
+    };
+
+    this.sendParentRefresh=function() {
+    	parent.DView.Refresh(windowID,fieldID);
+    }
+
+    this.drillDownToForm=function(server,form,vui,qual) {
+    	try {
+    		if("external" in window) {
+    			/*For backward compatibility look for fbDrillDown function.*/
+    			if("DrillDownToForm" in window.external) {
+    				return window.external.DrillDownToForm(windowID,server,form,vui,qual);
+    			}
+    			else if("fbDrillDown" in window.external) {
+    				return window.external.fbDrillDown(windowID,"",server,"",form,vui,qual);
+    			}
+    		}
+    	} catch(e) {
+    	}
+
+    	var winname = ""+new Date().getTime();
+    	server=encodeURIComponent(server);
+    	form=encodeURIComponent(form);
+    	vui=(vui != null && vui.length>0)?encodeURIComponent(vui):null;
+    	qual=(qual==null)?"":encodeURIComponent(qual);
+    	var url = midTierContextPath;
+    	if (appName && appName.length>0 && (server == encodeURIComponent(mServer))) {
+    		url += "apps/"+server+"/"+encodeURIComponent(appName);
+    	} else {
+    		url += "forms/"+server;
+    	}
+    	url+= "/" + form;
+    	if (vui !=null)  url+="/" + vui;
+    	url+= "?qual=" + qual+"&mode=modifyDirect";
+    	parent.open(url,winname); 
+    };
+
+    this.setEventHandler=function(obj, fp) {
+    	this.mCBObj=obj;
+    	this.mCBFp=fp;
+    };
+
+    this.dispatch=function(et,ed) {
+    	if (!this.mCBFp) return;
+    	var func=this.mCBFp;
+    	var obj=this.mCBObj;
+    	setTimeout(function() {
+    		if (obj)
+    			func.apply(obj,[et,ed]);
+    		else
+    			func(et,ed);
+    	},1);
+    };
+
+    this.enableSetFieldsEvent=function() {
+    	mSetEnable = true;
+    };
+
+    this.disableSetFieldsEvent=function() {
+    	mSetEnable = false;
+    };
+
+    this.isSetFieldsEventEnabled=function() {
+    	return mSetEnable;
+    };  
+
+	this.plugin_getWindowID=function() {
+		var fieldname = window.name;
+		if (fieldname == null || typeof fieldname == 'undefined') 
+			return windowID;
+		index = fieldname.lastIndexOf("_");
+		if (index == -1) return windowID;
+		return fieldname.substr(index+1);
+	};    
+
+	this.plugin_getFieldID=function() {
+		var fieldname = window.name;
+		if (fieldname == null || typeof fieldname == 'undefined') 
+			return fieldID;
+		 index = fieldname.indexOf("_");
+		 if (index ==-1 || index-2 <=0) return fieldID;
+		 return fieldname.substr(2,index-2);
+    };
+
+	windowID = this.plugin_getWindowID();
+
+    fieldID =  this.plugin_getFieldID();
+    
+    this.loadExternalScriptInParent=function(pluginName, relpath, func) {
+    	try {
+    		var path = relpath;
+    		if(typeof pluginName != undefined && pluginName!=null && pluginName.length > 0)
+    			path = "plugins/" + pluginName + "/" + relpath;
+    		parent.createScriptTag(parent.RelContextPath + path, func);
+    	} catch(e) {
+    	}
+    };
+
+    this.loadExternalStyleInParent=function(pluginName, relpath) {
+    	try {
+    		var path = relpath;
+    		if(typeof pluginName != undefined && pluginName.length > 0)
+    			path = "plugins/" + pluginName + "/" + relpath;
+    		parent.createStyleTag(parent.RelContextPath + path);
+    	} catch(e) {
+    	}
+    };
+
+    this.loadEmbeddedScriptInParent=function(script) {
+    	try {
+    		parent.embedScript(script);
+    	} catch(e) {
+    	}
+    };
+
+    this.loadEmbeddedStyleInParent=function(style) {
+    	try {
+    		parent.embedStyle(style);
+    	} catch(e) {
+    	}
+    };
+    
+    this.callParentFunction=function(objName, funcName, args) {
+    	try {
+    		var ret = parent.callFunction(objName, funcName, args, fieldID, windowID);
+            if(typeof ret != "undefined")
+            	return ret;
+    	} catch(e) {
+    	}
+    };
+    
+    this.callInternalFunction=function(objName, funcName, args) {
+        try {
+            var obj = window;
+            var func = null;
+            if(objName != null && objName.length > 0) {
+            	obj = window[objName];
+            }
+            if(funcName in obj) {
+            	func = obj[funcName];
+            	var ret = func.apply(obj,args);
+                if(typeof ret != "undefined")
+                	return ret;
+            }
+        } catch(e){
+        }
+    };
+
+}
+</script><link href="./mystyle.css" type="text/css" rel="stylesheet">
+<script type="text/javascript" src="./BaseController.js.download">
+</script>
+<script type="text/javascript" src="./Setup.js.download">
+</script>
+</head>
+<body bgcolor="white" onload="initSetupScript();" style="margin: 0px;">
+<table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td valign="top">    <div id="image-icon" align="left">
+        <img src="./Gray_Low.jpg">
+    </div>
+</td></tr></tbody></table>
+
+</body></html>

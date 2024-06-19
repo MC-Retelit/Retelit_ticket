@@ -12,6 +12,15 @@ sedi:
 	VIA DELL'ELETTRONICA 15 37139 VERONA (VR) - (....)
 	> 7.8.14.57
 ---------------------------------------------------------------
+Ecco le impostazioni che mi avevate fornito:
+- SNMP Version: v3
+- Target Port: UDP 161
+- User Name: snmpcliente
+- Auth Password: monitor2023
+- Security Level: Auth, NoPriv
+- Auth Protocol: MD5
+- Target Host: 46.228.245.57
+---------------------------------------------------------------
 CREATE GROUP
 berner-cpe-bsszeno(config)#snmp-server group name ?
   v1   group using the v1 security model
@@ -118,13 +127,9 @@ snmp-server location VIA ARMANDO DIAZ 30 25010 SAN ZENO NAVIGLIO (BS)
 snmp-server contact Irideos Spa
 snmp-server enable traps tty
 snmp-server host 46.228.245.57 version 3 auth snmpcliente
-
-
-
-
-
-
-
+_____________________________________________________________________________________
+Conf snmp user modifica
+berner-cpe-bsszeno(config)#snmp-server user snmpcliente monitorcliente v3 auth md5 monitor2023 access HOST-SNMP-CLIENTE
 
 
 

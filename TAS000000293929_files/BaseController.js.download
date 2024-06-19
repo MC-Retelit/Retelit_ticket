@@ -1,0 +1,143 @@
+/*
+ * Copyright © 2006 BMC Software, Inc.
+ * All rights reserved.
+ *
+ * This software is the confidential property and proprietary information of
+ * BMC Software, Inc.
+ */
+
+function BaseEvent(target) {
+    this.stoppedDefault = false;
+    if (typeof target != "number") { 
+        this.init(target);
+    }
+} //end BaseEvent()
+
+BaseEvent.trampoline = function(handler) {
+    return function(evt) {
+        if (handler != null && typeof handler == "function") {
+            var dbEvt = new BaseEvent(evt);
+        	var result = handler(dbEvt);
+	        if (typeof result == "boolean" && result == false) {
+    	        dbEvt.stopDefault();
+	        }
+    	    else if (typeof result == "string") {
+        	    return result;
+	        }
+        }
+    }
+} //end BaseEvent.trampoline()
+
+BaseEvent.prototype.init = function(event) {
+	
+	 if (typeof event == "undefined") 
+	 { 
+	   event = window.event; 
+	 } 
+
+    this.altKey   = event.altKey;
+    this.ctrlKey  = event.ctrlKey;
+    this.shiftKey = event.shiftKey;
+    this.keyCode  = event.keyCode;
+    this.offsetX  = event.offsetX;
+    this.offsetY  = event.offsetY;
+    this.element  = event.srcElement;
+    this.type     = event.type;
+} //end BaseEvent.prototype.init()
+
+BaseEvent.prototype.stopBubbling = function(event) {
+    
+	 if (typeof event == "undefined") 
+	 { 
+	   event = window.event; 
+	 } 
+	event.cancelBubble = true;
+}
+
+BaseEvent.prototype.stopDefault = function(event) {    
+	 if (typeof event == "undefined") 
+	 { 
+	   event = window.event; 
+	 } 
+	event.returnValue = false;
+    this.stoppedDefault = true;
+}
+
+BaseEvent.prototype.setKeyCode = function(event, code) {
+    
+	 if (typeof event == "undefined") 
+	 { 
+	   event = window.event; 
+	 } 
+    event.keyCode = code;
+}
+
+// Must load plugin support lib 1st!!
+
+function BaseController(parentDispatcher) {
+    this.midTierContextPath = null; // will be set by server
+    this.parentEventHandlers = new Array();
+    if (parentDispatcher != null && (typeof parentDispatcher == "object")) {
+        this.parentDispatcher = parentDispatcher;
+        this.parentDispatcher.setEventHandler(this, this.dispatchParentEvent);
+    }
+}
+
+BaseController.prototype.sendEventToMidTier = function(eventType, eventData) {
+    return this.parentDispatcher.sendEventToMidTier(eventType, eventData);
+}
+
+BaseController.prototype.sendEventToMidTierAsync = function(eventType, eventData, callback) {
+    var evt = this.parentDispatcher.createMidTierEvent(eventType,
+                                                       eventData,
+                                                       function() {
+                                                           if (evt.resultAvailable()) {
+                                                               eval("var resultObject = " + evt.getResultAsString());
+                                                               callback(resultObject);
+                                                           }
+                                                       });
+    evt.send();
+}
+
+BaseController.prototype.sendEventToParentForm = function(eventType, eventData) {
+    return this.parentDispatcher.sendEventToParentForm(eventType, eventData);
+}
+
+BaseController.prototype.registerDVFHandler = function(type, handler) {
+    this.parentEventHandlers[type] = handler;
+}
+
+BaseController.prototype.drillDownToForm = function(server, form, view, qualification) {
+    this.parentDispatcher.drillDownToForm(server, form, view, qualification);
+}
+
+BaseController.prototype.registerOnclickHandler = function(elmtID, handler) {
+    if (handler != null && typeof handler == "function") {
+        var elmt = document.getElementById(elmtID);
+        if (elmt != null) {
+            elmt.onclick = BaseEvent.trampoline(handler);
+        }
+    }
+}
+
+BaseController.prototype.registerOnchangeHandler = function(elmtID, handler) {
+    if (handler != null && typeof handler == "function") {
+        var elmt = document.getElementById(elmtID);
+        if (elmt != null) {
+            elmt.onchange = BaseEvent.trampoline(handler);
+        }
+    }
+}
+
+//non-public method. For internal use only
+BaseController.prototype.dispatchParentEvent = function(type, data) {
+    var handler = this.parentEventHandlers[type];
+    if (handler) {
+        return handler(type, data);
+    }
+    return "";
+}
+
+// Singleton instance of the controller, var is initialized in 
+// initPageScripting(). [See Setup.js].
+var Controller = null;

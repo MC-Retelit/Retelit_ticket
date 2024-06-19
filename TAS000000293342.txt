@@ -9,3 +9,7 @@ VRF info: (vrf in name/id, vrf out name/id)
   5 109.168.0.210 0 msec 0 msec 4 msec
   6 195.43.172.49 4 msec 4 msec 4 msec
 ce11-cal1.mil#
+
+Riscontrati numerosi tentativi di accesso non autorizzati, possibile causa di saturazione di banda,
+consigli di segnalare al Soc la situazione, 
+inoltre visto che non sembrano esserci colli di bottiglia lungo la linea, una soluzione potrebbe essere sostituire l'SFP nel router cliente
