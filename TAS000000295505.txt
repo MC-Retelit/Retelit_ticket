@@ -1,0 +1,110 @@
+cs1-cal4	195.43.163.210
+-----------------------------
+cs2-cal4    195.43.163.211
+
+Il cliente lamenta l'impossibilità di raggiungere la subnet 194.20.240.0.
+Dal router primario cs1-cal4 non si riscontrano problemi di raggiungibilità, le subnet rispondono entrambe al Ping.
+Dal router di backup cs2-cal4, la subnet non risponde al ping, l'ultimo hop noto è 62.173.165.238.
+
+
+
+
+
+cs1-cal4.mil
+
+{master:0}
+manuel.chiocchetta@cs1-cal4.mil> ping 194.20.232.0
+PING 194.20.232.0 (194.20.232.0): 56 data bytes
+64 bytes from 62.94.129.198: icmp_seq=0 ttl=248 time=17.425 ms
+64 bytes from 62.94.129.198: icmp_seq=1 ttl=248 time=16.855 ms
+^C
+--- 194.20.232.0 ping statistics ---
+2 packets transmitted, 2 packets received, 0% packet loss
+round-trip min/avg/max/stddev = 16.855/17.140/17.425/0.285 ms
+
+{master:0}
+manuel.chiocchetta@cs1-cal4.mil> ping 194.20.240.0
+PING 194.20.240.0 (194.20.240.0): 56 data bytes
+64 bytes from 62.173.165.234: icmp_seq=0 ttl=255 time=1.630 ms
+64 bytes from 62.173.165.234: icmp_seq=1 ttl=255 time=0.943 ms
+64 bytes from 62.173.165.234: icmp_seq=2 ttl=255 time=1.306 ms
+
+
+
+cs2-cal4.mil>
+{master:0}
+manuel.chiocchetta@cs2-cal4.mil> ping 194.20.232.0
+PING 194.20.232.0 (194.20.232.0): 56 data bytes
+64 bytes from 62.94.129.198: icmp_seq=0 ttl=248 time=17.331 ms
+64 bytes from 62.94.129.198: icmp_seq=1 ttl=248 time=17.238 ms
+64 bytes from 62.94.129.198: icmp_seq=2 ttl=248 time=17.034 ms
+64 bytes from 62.94.129.198: icmp_seq=3 ttl=248 time=17.607 ms
+64 bytes from 62.94.129.198: icmp_seq=4 ttl=248 time=17.373 ms
+64 bytes from 62.94.129.198: icmp_seq=5 ttl=248 time=19.791 ms
+64 bytes from 62.94.129.198: icmp_seq=6 ttl=248 time=30.705 ms
+64 bytes from 62.94.129.198: icmp_seq=7 ttl=248 time=16.954 ms
+64 bytes from 62.94.129.198: icmp_seq=8 ttl=248 time=17.031 ms
+
+manuel.chiocchetta@cs2-cal4.mil> ping 194.20.240.1
+PING 194.20.240.1 (194.20.240.1): 56 data bytes
+36 bytes from 238.165.173.62.host.static.ip.kpnqwest.it (62.173.165.238): Destination Host Unreachable
+Vr HL TOS  Len   ID Flg  off TTL Pro  cks      Src      Dst
+ 4  5  00 0054 42f4   0 0000  3f  01 a204 62.173.165.237  194.20.240.1
+
+manuel.chiocchetta@cs2-cal4.mil> traceroute 194.20.240.0
+traceroute to 194.20.240.0 (194.20.240.0), 30 hops max, 40 byte packets
+ 1  238.165.173.62.host.static.ip.kpnqwest.it (62.173.165.238)  1.379 ms  1.136 ms  5.564 ms
+ 2  238.165.173.62.host.static.ip.kpnqwest.it (62.173.165.238)  6.871 ms !H *  3.245 ms !H
+
+ {master:0}
+manuel.chiocchetta@cs2-cal4.mil> ping 62.173.165.238
+PING 62.173.165.238 (62.173.165.238): 56 data bytes
+64 bytes from 62.173.165.238: icmp_seq=0 ttl=255 time=2.957 ms
+64 bytes from 62.173.165.238: icmp_seq=1 ttl=255 time=3.299 ms
+64 bytes from 62.173.165.238: icmp_seq=2 ttl=255 time=1.490 ms
+64 bytes from 62.173.165.238: icmp_seq=3 ttl=255 time=2.327 ms
+64 bytes from 62.173.165.238: icmp_seq=4 ttl=255 time=1.138 ms
+
+
+{master:0}
+manuel.chiocchetta@cs2-cal4.mil> show route 194.20.240.0
+
+inet.0: 895 destinations, 951 routes (763 active, 0 holddown, 132 hidden)
++ = Active Route, - = Last Active, * = Both
+
+194.20.240.0/22    *[BGP/170] 6d 02:47:30, MED 0, localpref 100
+                      AS path: 6665 I, validation-state: unverified
+                    > to 62.173.165.238 via ge-1/0/24.0
+
+
+manuel.chiocchetta@cs2-cal4.mil> show interfaces terse | match ge-1/0/24.0
+ge-1/0/24.0             up    up   inet     62.173.165.237/30
+
+
+manuel.chiocchetta@cs2-cal4.mil> show configuration interfaces ge-1/0/24.0
+description "to: SHI1 - SHINY SRL (BW200Mbps - 4 IP + BGP) - Link 2";
+family inet {
+    address 62.173.165.237/30;
+}
+
+{master:0}
+
+
+manuel.chiocchetta@cs2-cal4.mil> show bgp summary
+Groups: 4 Peers: 10 Down peers: 3
+Table          Tot Paths  Act Paths Suppressed    History Damp State    Pending
+inet.0
+                     138          5          0          0          0          0
+inet6.0
+                       1          1          0          0          0          0
+Peer                     AS      InPkt     OutPkt    OutQ   Flaps Last Up/Dwn State|#Active/Received/Accepted/Damped...
+62.173.165.238         6665      25204      25221       0       1      1w1d0h 2/2/2/0              0/0/0/0
+109.168.98.206       200497     335707     365589       0      31     43w2d2h Idle
+109.168.100.146        6665     700307     782781       0       6     35w4d1h 2/2/2/0              0/0/0/0
+195.43.163.201         5602    1344100    1348824       0      14      1w1d0h 0/0/0/0              0/0/0/0
+195.43.163.202         5602    1379053    1388793       0      29     63w1d3h 0/0/0/0              0/0/0/0
+195.43.163.252         5602    1894994    1893664       0      11     86w1d8h 1/1/1/0              0/0/0/0
+195.43.163.253         5602      26312      25046       0       6     1w0d23h 0/133/1/0            0/0/0/0
+212.97.51.134        201362    1644147    1827300       0      37    48w0d19h Idle
+2001:1450:0:a::5:6      200497     649814     617964       0      22    68w1d12h Idle
+2001:1450:0:5602::222        5602      13981      13982       0      53 4d 10:44:47 Establ

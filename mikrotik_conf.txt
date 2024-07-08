@@ -1,0 +1,116 @@
+[roo6EiS8@Mikrotik] > export terse
+# jun/26/2024 10:14:05 by RouterOS 6.49.15
+# software id = TG8I-U6AK
+#
+# model = 2011iLS
+# serial number = 60820544646A
+/interface bridge add admin-mac=E4:8D:8C:38:CC:68 auto-mac=no fast-forward=no name=bridge-local
+/interface ethernet set [ find default-name=ether1 ] name=ether1-gateway speed=100Mbps
+/interface ethernet set [ find default-name=ether2 ] name=ether2-master-local speed=100Mbps
+/interface ethernet set [ find default-name=ether3 ] name=ether3-slave-local speed=100Mbps
+/interface ethernet set [ find default-name=ether4 ] name=ether4-slave-local speed=100Mbps
+/interface ethernet set [ find default-name=ether5 ] name=ether5-slave-local speed=100Mbps
+/interface ethernet set [ find default-name=ether6 ] advertise=10M-half,10M-full,100M-half,100M-full,1000M-half,1000M-full name=ether6-master-local
+/interface ethernet set [ find default-name=ether7 ] advertise=10M-half,10M-full,100M-half,100M-full,1000M-half,1000M-full name=ether7-slave-local
+/interface ethernet set [ find default-name=ether8 ] advertise=10M-half,10M-full,100M-half,100M-full,1000M-half,1000M-full name=ether8-slave-local
+/interface ethernet set [ find default-name=ether9 ] advertise=10M-half,10M-full,100M-half,100M-full,1000M-half,1000M-full name=ether9-slave-local
+/interface ethernet set [ find default-name=ether10 ] advertise=10M-half,10M-full,100M-half,100M-full,1000M-half,1000M-full name=ether10-slave-local
+/interface vlan add interface=sfp1 name=vlan11 vlan-id=11
+/interface pppoe-client add add-default-route=yes default-route-distance=0 disabled=no interface=vlan11 keepalive-timeout=60 name=PPPoE password=ts1l0s service-name=Internet user=technosilos@pppoe.kpnqwest.it
+/interface list add exclude=dynamic name=discover
+/interface list add name=mactel
+/interface list add name=mac-winbox
+/interface wireless security-profiles set [ find default=yes ] supplicant-identity=MikroTik
+/ip ipsec proposal set [ find default=yes ] enc-algorithms=aes-128-cbc
+/ip pool add name=default-dhcp ranges=192.168.88.10-192.168.88.254
+/ip dhcp-server add address-pool=default-dhcp authoritative=after-2sec-delay disabled=no interface=bridge-local name=default
+/ppp profile set *FFFFFFFE local-address=192.168.80.1 remote-address=default-dhcp
+/queue simple add max-limit=30M/0 name=queue1 target=PPPoE
+/snmp community set [ find default=yes ] addresses=0.0.0.0/0
+/interface bridge port add bridge=bridge-local interface=ether2-master-local
+/interface bridge port add bridge=bridge-local interface=ether6-master-local
+/interface bridge port add bridge=bridge-local hw=no interface=sfp1
+/interface bridge port add bridge=bridge-local interface=ether3-slave-local
+/interface bridge port add bridge=bridge-local interface=ether4-slave-local
+/interface bridge port add bridge=bridge-local interface=ether5-slave-local
+/interface bridge port add bridge=bridge-local interface=ether7-slave-local
+/interface bridge port add bridge=bridge-local interface=ether8-slave-local
+/interface bridge port add bridge=bridge-local interface=ether9-slave-local
+/interface bridge port add bridge=bridge-local interface=ether10-slave-local
+/ip neighbor discovery-settings set discover-interface-list=discover
+/interface list member add interface=sfp1 list=discover
+/interface list member add interface=ether2-master-local list=discover
+/interface list member add interface=ether3-slave-local list=discover
+/interface list member add interface=ether4-slave-local list=discover
+/interface list member add interface=ether5-slave-local list=discover
+/interface list member add interface=ether6-master-local list=discover
+/interface list member add interface=ether7-slave-local list=discover
+/interface list member add interface=ether8-slave-local list=discover
+/interface list member add interface=ether9-slave-local list=discover
+/interface list member add interface=ether10-slave-local list=discover
+/interface list member add interface=bridge-local list=discover
+/interface list member add interface=vlan11 list=discover
+/interface list member add interface=PPPoE list=discover
+/interface list member add interface=ether2-master-local list=mactel
+/interface list member add interface=ether3-slave-local list=mactel
+/interface list member add interface=ether2-master-local list=mac-winbox
+/interface list member add interface=ether4-slave-local list=mactel
+/interface list member add interface=ether3-slave-local list=mac-winbox
+/interface list member add interface=ether5-slave-local list=mactel
+/interface list member add interface=ether6-master-local list=mactel
+/interface list member add interface=ether7-slave-local list=mactel
+/interface list member add interface=ether4-slave-local list=mac-winbox
+/interface list member add interface=ether8-slave-local list=mactel
+/interface list member add interface=ether5-slave-local list=mac-winbox
+/interface list member add interface=ether9-slave-local list=mactel
+/interface list member add interface=ether10-slave-local list=mactel
+/interface list member add interface=ether6-master-local list=mac-winbox
+/interface list member add interface=sfp1 list=mactel
+/interface list member add interface=ether7-slave-local list=mac-winbox
+/interface list member add interface=bridge-local list=mactel
+/interface list member add interface=ether8-slave-local list=mac-winbox
+/interface list member add interface=ether9-slave-local list=mac-winbox
+/interface list member add interface=ether10-slave-local list=mac-winbox
+/interface list member add interface=sfp1 list=mac-winbox
+/interface list member add interface=bridge-local list=mac-winbox
+/interface pptp-server server set authentication=pap,chap,mschap1,mschap2 enabled=yes
+/ip address add address=195.43.191.237/30 comment="default configuration" interface=bridge-local network=195.43.191.236
+/ip address add address=109.168.4.29/30 interface=bridge-local network=109.168.4.28
+/ip dhcp-client add comment="default configuration" disabled=no interface=ether1-gateway
+/ip dhcp-server network add address=192.168.88.0/24 comment="default configuration" gateway=192.168.88.1
+/ip dns set servers=8.8.8.8
+/ip firewall address-list add address=212.29.130.0/25 list=MNG
+/ip firewall address-list add address=212.29.129.16 list=MNG
+/ip firewall address-list add address=192.168.88.0/24 list=MNG
+/ip firewall address-list add address=213.21.143.25 list=MNG
+/ip firewall address-list add address=194.244.57.128/31 list=MNG
+/ip firewall address-list add address=217.12.181.16/28 list=MNG
+/ip firewall address-list add address=213.21.176.29 list=MNG
+/ip firewall address-list add address=213.21.130.64/27 list=MNG
+/ip firewall address-list add address=213.21.131.64/27 list=MNG
+/ip firewall address-list add address=213.21.177.96/27 list=MNG
+/ip firewall address-list add address=217.12.176.10 list=MNG
+/ip firewall address-list add address=212.97.35.10 list=MNG
+/ip firewall filter add action=accept chain=input comment="default configuration" disabled=yes protocol=icmp
+/ip firewall filter add action=accept chain=input comment="default configuration" connection-state=established,related disabled=yes
+/ip firewall filter add action=drop chain=input comment="default configuration" disabled=yes in-interface=ether1-gateway
+/ip firewall filter add action=fasttrack-connection chain=forward comment="default configuration" connection-state=established,related disabled=yes
+/ip firewall filter add action=accept chain=forward comment="default configuration" connection-state=established,related disabled=yes
+/ip firewall filter add action=drop chain=forward comment="default configuration" connection-state=invalid disabled=yes
+/ip firewall filter add action=drop chain=forward comment="default configuration" connection-nat-state=!dstnat connection-state=new disabled=yes in-interface=ether1-gateway
+/ip firewall filter add action=accept chain=input protocol=icmp
+/ip firewall filter add action=accept chain=input src-address-list=MNG
+/ip firewall filter add action=accept chain=input connection-state=established,related
+/ip firewall filter add action=drop chain=input
+/ip firewall nat add action=masquerade chain=srcnat comment="default configuration" out-interface=ether1-gateway
+/ip service set ftp disabled=yes
+/ip service set www port=56020
+/ip service set api disabled=yes
+/ip service set api-ssl disabled=yes
+/system clock set time-zone-name=Europe/Rome
+/system identity set name=Mikrotik
+/system note set show-at-login=no
+/system ntp client set enabled=yes primary-ntp=212.29.129.3 secondary-ntp=193.204.114.233
+/tool mac-server set allowed-interface-list=mactel
+/tool mac-server mac-winbox set allowed-interface-list=mac-winbox
+/tool romon port add

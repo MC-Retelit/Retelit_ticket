@@ -1,0 +1,8 @@
+Device Cliente
+NY4017_ENJOYNET
+194.242.222.252
+password è 17vn40
+
+DC Roma Cornelia
+asr1 = 100.64.142.182
+asr2 = 100.64.142.186

@@ -1,0 +1,42 @@
+PE-14018-AO-078-01-PontSMartin
+
+router bgp 65501
+ bgp router-id 62.196.4.77
+ no bgp default ipv4-unicast
+ bgp log-neighbor-changes
+ neighbor 217.12.190.253 remote-as 65501
+ neighbor 217.12.190.253 update-source Loopback1
+ neighbor 217.12.190.254 remote-as 65501
+ neighbor 217.12.190.254 update-source Loopback1...
+
+ address-family ipv4 vrf Hexagon
+...
+
+
+
+
+
+manuel.chiocchetta@PE-MI-065-03-Avalon> show route 62.196.4.77 table Hexagon
+
+Hexagon.inet.0: 156 destinations, 313 routes (156 active, 0 holddown, 0 hidden)
++ = Active Route, - = Last Active, * = Both
+
+0.0.0.0/0          *[BGP/170] 6d 10:04:26, localpref 100, from 217.12.190.253
+                      AS path: 5396 I, validation-state: unverified
+                    > to 62.196.32.45 via ae0.400, Push 35832, Push 307472(top)
+                    [BGP/170] 6d 10:04:26, localpref 100, from 217.12.190.254
+                      AS path: 5396 I, validation-state: unverified
+                    > to 62.196.32.45 via ae0.400, Push 35832, Push 307472(top)
+
+manuel.chiocchetta@PE-MI-065-03-Avalon> show route 62.196.4.77 table Hexagon terse
+
+Hexagon.inet.0: 156 destinations, 313 routes (156 active, 0 holddown, 0 hidden)
++ = Active Route, - = Last Active, * = Both
+
+A V Destination        P Prf   Metric 1   Metric 2  Next hop        AS path
+* ? 0.0.0.0/0          B 170        100                             5396 I
+  unverified                                       >62.196.32.45
+  ?                    B 170        100                             5396 I
+  unverified                                       >62.196.32.45
+
+manuel.chiocchetta@PE-MI-065-03-Avalon> 62.196.32.45
